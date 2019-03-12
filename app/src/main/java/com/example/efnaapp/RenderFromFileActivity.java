@@ -1,5 +1,8 @@
 package com.example.efnaapp;
 
+import android.graphics.BlurMaskFilter;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,33 +10,40 @@ import android.view.Display;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+import static android.graphics.Color.BLUE;
+
+
+/**
+ * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
+ * @author Karen Ósk Pétursdóttir
+ */
 public class RenderFromFileActivity extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
 
-    //ArrayList<String[]> elementsToDraw;
+    // Need a class/method that:
+    // CHECK - reads config file and stores coordinates of items to draw
+    // goes through through this info and draws items in correct coordinates
 
-    // Need a class/method that gets user tapping coordinates
-    // Need a class/method that compares those to coordinates of chemicals
+    // New class for:
+    // getting user tapping coordinates (class must implement onTouchListener)
+    //      ("class <Name> extends Activity implements onTouchListener")
+    // comparing those to coordinates of chemicals
 
 
-    /** This method reads a file which contains symbols (atoms, bonds or lone electron pairs, ...)
-     *  along with their coordinates and returns an ArrayList of ArrayLists(?) with those pairings
-     *  of symbol and coordinates.
-     * @return
+    /** This method reads a file which contains symbols (atoms, bonds, lone electron pairs, ...)
+     *  along with their coordinates.
+     *  @return an ArrayList of String arrays where each array contains an item to be drawn along
+     *  with its screen coordinates.
      */
-    private ArrayList<String[]> readChemFile(){
+    private ArrayList<String[]> configFileToCoordinates(){
 
         ArrayList<String> listOfLines = new ArrayList<>();
         ArrayList<String[]> elementsToDraw = new ArrayList<>();
@@ -43,7 +53,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
 
-            //ArrayList<String> listOfLines = new ArrayList<>();
             String line = bufReader.readLine();
             while (line != null) {
                 listOfLines.add(line);
@@ -51,10 +60,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
             }
 
             bufReader.close();
-            System.out.println("************************************Content of ArrayList no. 0:");
-            System.out.println(listOfLines.get(0));
-
-            // use string.split(" "); for any String called string.
         }
 
         catch (FileNotFoundException e) {
@@ -65,7 +70,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //for(int i = 0; i < listOfLines.size(); i++){
         for(String s : listOfLines){
             String[] strArray = s.split(" ");
             elementsToDraw.add(strArray);
@@ -73,6 +77,23 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         return elementsToDraw;
     }
+
+
+    /** This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
+     *  todo
+     */
+    private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
+
+        for (String[] item : itemsToDraw) {
+            //draw item[0]
+            //at coordinates (item[1],item[2])
+            System.out.println(item[0]);
+        }
+
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.BLUE);
+    }
+
 
 
     @Override
@@ -89,14 +110,17 @@ public class RenderFromFileActivity extends AppCompatActivity {
         maxX = mdispSize.x;
         maxY = mdispSize.y;
 
-        //System.out.println(maxX + " " + maxY);
+        // Stores items and their coordinates from config file to be able to draw them in the
+        // right place
+        ArrayList<String[]> drawComponents = configFileToCoordinates();
 
-        ArrayList<String[]> drawComponents = readChemFile();
-
+        /*
         for(String[] f : drawComponents){
             for(String s : f){
                 System.out.println(s);
             }
-        }
+        }*/
+
+        drawCompoundsFromCoordinates(drawComponents);
     }
 }
