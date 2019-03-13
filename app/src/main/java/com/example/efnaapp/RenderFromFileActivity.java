@@ -1,12 +1,16 @@
 package com.example.efnaapp;
 
-import android.graphics.BlurMaskFilter;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -27,6 +31,14 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
+
+    // Bitmap is necessary for being able to draw on the screen
+    private Bitmap mBitmap;
+    private int x = 500;
+    private int y = 500;
+
+    // ArrayList that holds string values for components to be drawn along with their coordinates.
+    ArrayList<String[]> componentsToDraw;
 
     // Need a class/method that:
     // CHECK - reads config file and stores coordinates of items to draw
@@ -90,11 +102,44 @@ public class RenderFromFileActivity extends AppCompatActivity {
             System.out.println(item[0]);
         }
 
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.BLUE);
+        MyCanvas myCanvas = new MyCanvas(getApplicationContext());
+       // myCanvas.draw();// asdf?
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+        addContentView(myCanvas, layoutParams);
     }
 
+    private class MyCanvas extends View {
 
+        public MyCanvas(Context context){
+            super(context);
+        }
+
+        @Override
+        public void draw(Canvas canvas){
+            super.draw(canvas);
+
+            Paint background = new Paint();
+            background.setColor(Color.parseColor("#112288")); // Background colour
+
+            background.setStyle(Paint.Style.FILL);
+            Paint symbol = new Paint();
+            symbol.setColor(Color.YELLOW);
+            symbol.setTextSize(100);
+            symbol.setStyle(Paint.Style.FILL);
+            symbol.setStrokeWidth(1);
+
+            canvas.drawPaint(background);
+            for(String[] f : componentsToDraw){
+                canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
+            }
+            /*
+            if(mBitmap != null) {
+                mBitmap.setPixel(x, y, Color.YELLOW);
+                canvas.drawBitmap(mBitmap, x, y, paint);
+            }*/
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,15 +157,16 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
-        ArrayList<String[]> drawComponents = configFileToCoordinates();
+        componentsToDraw = configFileToCoordinates();
 
-        /*
-        for(String[] f : drawComponents){
-            for(String s : f){
-                System.out.println(s);
-            }
-        }*/
+        drawCompoundsFromCoordinates(componentsToDraw);
 
-        drawCompoundsFromCoordinates(drawComponents);
+        // ASDF nota drawPath til að teikna örvarnar frá notanda inn á
+        // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles
+        // drawText(String text, float x, float y, Paint paint) fyrir texta
+        //      drawTextOnPath? Er það eitthvað?
+        // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða
+        //      fyrirbæri; : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi
+        //      (kannski nota bara drawLine fyrir -- og jafnvel | líka)
     }
 }
