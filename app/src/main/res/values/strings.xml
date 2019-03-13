@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">efnaapp</string>
     <string name="action_settings">Settings</string>
+    <string name="button">button</string>
+    <string name="Collection1">collection1button</string>
+    <string name="Collection2">collection2button</string>
+    <string name="Collection3">collection3button</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
