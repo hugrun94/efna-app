@@ -9,6 +9,13 @@
     <string name="Collection5">Radical</string>
     <string name="Collection6">Oxidation/Reduction</string>
 
+    <string name="menuButton">Menu</string>
+    <string name="startAgainButton">Start Again</string>
+    <string name="finishButton">Finish</string>
+    <string name="nextButton">Next</string>
+    <string name="previousButton">Previous</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
