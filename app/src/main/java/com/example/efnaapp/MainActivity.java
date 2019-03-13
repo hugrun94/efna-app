@@ -39,7 +39,11 @@ public class MainActivity extends AppCompatActivity {
     public void startButtonActivity(View view){
         Intent intent = new Intent(this,ProblemActivity.class);
         startActivity(intent);
-        System.out.print("hallo");
+    }
+
+    public void pushcoll2(View view){
+        Intent intent = new Intent(this,DisplayActivity.class);
+        startActivity(intent);
     }
 
     @Override
