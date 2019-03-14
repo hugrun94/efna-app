@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -91,25 +92,24 @@ public class RenderFromFileActivity extends AppCompatActivity {
     }
 
 
-    /** This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
-     *  todo
+    /**
+     * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
-        for (String[] item : itemsToDraw) {
-            //draw item[0]
-            //at coordinates (item[1],item[2])
-            System.out.println(item[0]);
-        }
-
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
-       // myCanvas.draw();// asdf?
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         addContentView(myCanvas, layoutParams);
     }
 
-    private class MyCanvas extends View {
+    /**
+     * This class has the drawing logic of all drawn chemical compounds and user-drawn arrows.
+     */
+    private class MyCanvas extends View implements View.OnTouchListener {
+
+        Bitmap bitmap;
+        int x, y;
 
         public MyCanvas(Context context){
             super(context);
@@ -134,10 +134,22 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
             }
             /*
+
+            Testing testing... delete this later asdf
             if(mBitmap != null) {
                 mBitmap.setPixel(x, y, Color.YELLOW);
                 canvas.drawBitmap(mBitmap, x, y, paint);
             }*/
+        }
+
+        /*
+         * This method catches what the user draws on the screen and turns it into arrows that will
+         * make chemical reactions happen.
+         */
+        @Override
+        public boolean onTouch(View arg0, MotionEvent arg1) {
+            // todo
+            return false;
         }
     }
 
@@ -162,11 +174,10 @@ public class RenderFromFileActivity extends AppCompatActivity {
         drawCompoundsFromCoordinates(componentsToDraw);
 
         // ASDF nota drawPath til að teikna örvarnar frá notanda inn á
-        // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles
-        // drawText(String text, float x, float y, Paint paint) fyrir texta
-        //      drawTextOnPath? Er það eitthvað?
+        // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles?
         // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða
-        //      fyrirbæri; : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi
-        //      (kannski nota bara drawLine fyrir -- og jafnvel | líka)
+        //      fyrirbæri; : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað
+        //      en hreinn texti.
+        //      (kannski nota bara drawLine fyrir -- og jafnvel | líka? Gæti verið vesen)
     }
 }
