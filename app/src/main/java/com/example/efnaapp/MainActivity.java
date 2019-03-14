@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
     public void pushcoll2(View view){
         Intent intent = new Intent(this,DisplayActivity.class);
         startActivity(intent);
+    }
+
+    public void testChemDraw(View view) {
+        Intent startChemTestActivity = new Intent(this, RenderFromFileActivity.class);
+        startActivity(startChemTestActivity);
     }
 
     @Override
