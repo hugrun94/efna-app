@@ -1,4 +1,21 @@
 <resources>
-    <string name="app_name">efnaapp</string>
+    <string name="app_name">Reaction Calculation</string>
     <string name="action_settings">Settings</string>
+    <string name="button">button</string>
+    <string name="Collection1">Acid/Base</string>
+    <string name="Collection2">Addition</string>
+    <string name="Collection3">Elimination</string>
+    <string name="Collection4">Substitution</string>
+    <string name="Collection5">Radical</string>
+    <string name="Collection6">Oxidation/Reduction</string>
+
+    <string name="menuButton">Menu</string>
+    <string name="startAgainButton">Start Again</string>
+    <string name="finishButton">Finish</string>
+    <string name="nextButton">Next</string>
+    <string name="previousButton">Previous</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
