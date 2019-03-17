@@ -1,10 +1,12 @@
 package com.example.efnaapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,9 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import static android.graphics.Color.BLUE;
-
-
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
  * @author Karen Ósk Pétursdóttir
@@ -34,20 +33,13 @@ public class RenderFromFileActivity extends AppCompatActivity {
     int maxX, maxY;
 
     // Bitmap is necessary for being able to draw on the screen
-    private Bitmap mBitmap;
-    private int x = 500;
-    private int y = 500;
+    private Bitmap mChemBitmap;
+    private Bitmap mArrowBitmap;
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
-    // Need a class/method that:
-    // CHECK - reads config file and stores coordinates of items to draw
-    // goes through through this info and draws items in correct coordinates
-
-    // New class for:
-    // getting user tapping coordinates (class must implement onTouchListener)
-    //      ("class <Name> extends Activity implements onTouchListener")
+    // Need new class for:
     // comparing those to coordinates of chemicals
 
 
@@ -95,21 +87,28 @@ public class RenderFromFileActivity extends AppCompatActivity {
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         addContentView(myCanvas, layoutParams);
+
+        myCanvas.setOnTouchListener(myCanvas);
+        myCanvas.setDrawingCacheEnabled(true);
+        mChemBitmap = myCanvas.getDrawingCache();
+        mArrowBitmap = myCanvas.getDrawingCache();
+        //mChemBitmap.recycle();
+        //mArrowBitmap.recycle();
     }
 
     /**
-     * This class has the drawing logic of all drawn chemical compounds and user-drawn arrows.
+     * This class has the drawing logic of all chemical compounds and user-drawn arrows(/paths).
      */
     private class MyCanvas extends View implements View.OnTouchListener {
 
-        Bitmap bitmap;
-        int x, y;
+        private float x, y;
 
         public MyCanvas(Context context){
             super(context);
@@ -119,27 +118,48 @@ public class RenderFromFileActivity extends AppCompatActivity {
         public void draw(Canvas canvas){
             super.draw(canvas);
 
-            Paint background = new Paint();
-            background.setColor(Color.parseColor("#112288")); // Background colour
+            mArrowBitmap = Bitmap.createBitmap(maxX, maxY, Bitmap.Config.ARGB_8888);
 
+            Paint background = new Paint();
+            background.setColor(Color.parseColor("#335599")); // Background colour
             background.setStyle(Paint.Style.FILL);
+
             Paint symbol = new Paint();
-            symbol.setColor(Color.YELLOW);
-            symbol.setTextSize(100);
-            symbol.setStyle(Paint.Style.FILL);
+            symbol.setColor(Color.parseColor("#EEEE66")); // Colour of chemical compounds
+            symbol.setTextSize((int)(maxX*(100.0/1920.0))); // Text size is in proportion with
+            symbol.setStyle(Paint.Style.FILL);              // device window size.
             symbol.setStrokeWidth(1);
 
             canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
             }
-            /*
 
-            Testing testing... delete this later asdf
-            if(mBitmap != null) {
-                mBitmap.setPixel(x, y, Color.YELLOW);
-                canvas.drawBitmap(mBitmap, x, y, paint);
-            }*/
+            Paint arrows = new Paint();
+            arrows.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
+            arrows.setStrokeWidth(25);
+
+            if(mArrowBitmap != null) {
+                mArrowBitmap.setPixel((int)x, (int)y, arrows.getColor());
+                /*Point[] points;
+
+                Path path = new Path();
+                boolean first = true;
+
+
+                for(Point point : points){
+                    if(first){
+                        first = false;
+                        path.moveTo(point.x, point.y);
+                    }
+                    else{
+                        path.lineTo(point.x, point.y);
+                    }
+                }*/
+                //canvas.drawPath(path, arrows);
+                canvas.drawBitmap(mArrowBitmap, x, y, arrows);
+                canvas.drawCircle(x,y,20, arrows);
+            }
         }
 
         /*
@@ -147,9 +167,25 @@ public class RenderFromFileActivity extends AppCompatActivity {
          * make chemical reactions happen.
          */
         @Override
-        public boolean onTouch(View arg0, MotionEvent arg1) {
-            // todo
-            return false;
+        public boolean onTouch(View view, MotionEvent event) {
+
+            if(event.getX() < 0){
+                x = 0;
+            }
+            else {
+                x = event.getX();
+            }
+
+            if(event.getY() < 0){
+                y = 0;
+            }
+            else {
+                y = event.getY();
+            }
+
+            mArrowBitmap = view.getDrawingCache();
+            view.invalidate();
+            return true;
         }
     }
 
