@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
+ * The class assumes that all components (i.e. atoms, bonds, electron pairs, hydrogen atoms, any plus-
+ * signs between chemicals and arrows that point from reacting chemicals to product chemicals) have
+ * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
 public class RenderFromFileActivity extends AppCompatActivity {
@@ -33,7 +37,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
     int maxX, maxY;
 
     private Bitmap mChemBitmap;
-    //private Bitmap mArrowBitmap; // ASDF don't think we need a new bitmap for the arrows
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
@@ -97,9 +100,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
         myCanvas.setOnTouchListener(myCanvas);
         myCanvas.setDrawingCacheEnabled(true);
         mChemBitmap = myCanvas.getDrawingCache();
-        //mArrowBitmap = myCanvas.getDrawingCache();
-        //mChemBitmap.recycle();// ASDF
-        //mArrowBitmap.recycle();
     }
 
     /**
@@ -108,7 +108,8 @@ public class RenderFromFileActivity extends AppCompatActivity {
     private class MyCanvas extends View implements View.OnTouchListener {
 
         private float x, y;
-        private ArrayList<Point> points = new ArrayList<>();
+        private Path arrow = new Path();
+        private ArrayList<Path> arrows = new ArrayList<>();
 
         public MyCanvas(Context context){
             super(context);
@@ -117,8 +118,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
         @Override
         public void draw(Canvas canvas){
             super.draw(canvas);
-
-            //mArrowBitmap = Bitmap.createBitmap(maxX, maxY, Bitmap.Config.ARGB_8888);
 
             Paint background = new Paint();
             background.setColor(Color.parseColor("#335599")); // Background colour.
@@ -135,75 +134,62 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
             }
 
-            Paint arrows = new Paint();
-            arrows.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
-            arrows.setStrokeWidth(25);
-            symbol.setStyle(Paint.Style.STROKE);
+            Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
+            arrowPaint.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
+            arrowPaint.setStrokeWidth(10);
+            arrowPaint.setStyle(Paint.Style.STROKE);
 
-            /*
-            if(mArrowBitmap != null) {
-                mArrowBitmap.setPixel((int) x, (int) y, arrows.getColor());
-            }*/
-
+            // Draws the arrows if the bitmap is not null
             if(mChemBitmap != null) {
-                mChemBitmap.setPixel((int)x, (int)y, arrows.getColor());
 
-                Path path = new Path();
-                boolean first = true;
-
-                if(points != null) {
-                    for (Point point : points) {
-                        if (first) {
-                            first = false;
-                            path.moveTo(point.x, point.y);
-                        } else {
-                            path.lineTo(point.x, point.y);
-                        }
-                    }
+                for (Path path : arrows) {
+                    canvas.drawPath(path, arrowPaint);
                 }
-                canvas.drawPath(path, arrows);
-                //canvas.drawBitmap(mArrowBitmap, x, y, arrows); // Var commentað út
-                //canvas.drawBitmap(mChemBitmap, x, y, arrows);
-                //canvas.drawCircle(x, y, 7, arrows);
+
             }
         }
 
         /*
-         * This method catches what the user draws on the screen and stores it in the ArrayList 'points'.
+         * This method catches what the user draws on the screen.
          */
         @Override
         public boolean onTouch(View view, MotionEvent event) {
 
-            if(event.getX() < 0){
-                x = 0;
-            }
-            else {
-                x = event.getX();
+            x = event.getX();
+            y = event.getY();
+
+            PointF endPoint = new PointF(0,0);
+
+            switch (event.getAction())
+            {
+                case MotionEvent.ACTION_DOWN:
+                    endPoint = new PointF();
+                    arrow = new Path();
+                    endPoint.x = x;
+                    endPoint.y = y;
+
+                    arrow.moveTo(endPoint.x,endPoint.y);
+                    arrows.add(arrow);
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    endPoint.x = x;
+                    endPoint.y = y;
+                    arrow.lineTo(x, y);
+
+                    invalidate();
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    endPoint.x = x;
+                    endPoint.y = y;
+
+                    break;
+
+                default:
+                    break;
             }
 
-            if(event.getY() < 0){
-                y = 0;
-            }
-            else {
-                y = event.getY();
-            }
-
-            Point newPoint = new Point((int)x,(int)y);
-            if(points != null) {
-                points.add(newPoint);
-
-                for (Point p : points) {
-                    System.out.println("------------------------------------------");
-                    System.out.println("------------------PUNKTUR:------------------");
-                    System.out.println(p);
-                }
-            }
-            else {
-                System.out.println("------------------------------------------");
-                System.out.println("------------------points ER NULL :( ------------------");
-            }
-
-            //mArrowBitmap = view.getDrawingCache();
             mChemBitmap = view.getDrawingCache();
             view.invalidate();
             return true;
@@ -224,17 +210,14 @@ public class RenderFromFileActivity extends AppCompatActivity {
         maxX = mdispSize.x;
         maxY = mdispSize.y;
 
-        // Stores items and their coordinates from config file to be able to draw them in the
-        // right place
+        // Stores items and their coordinates from config file to be able to draw them in the right place
         componentsToDraw = configFileToCoordinates();
 
         drawCompoundsFromCoordinates(componentsToDraw);
 
-        // ASDF nota drawPath til að teikna örvarnar frá notanda inn á
         // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles?
-        // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða
-        //      fyrirbæri; : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað
-        //      en hreinn texti.
+        // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
+        //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
         //      (kannski nota bara drawLine fyrir -- og jafnvel | líka? Gæti verið vesen)
     }
 }
