@@ -109,10 +109,21 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         private float x, y;
         private Path arrow = new Path();
+        private ArrayList<PointF> pointsInPath = new ArrayList<>();
         private ArrayList<Path> arrows = new ArrayList<>();
 
         public MyCanvas(Context context){
             super(context);
+        }
+
+        /**
+         * Calculates the angle between two points in radians.
+         */
+        private double getAngle(PointF point1, PointF point2){
+            double dx = point1.x - point2.x;
+            double dy = point2.y - point1.y;
+
+            return Math.atan2(dy, dx);
         }
 
         @Override
@@ -139,18 +150,56 @@ public class RenderFromFileActivity extends AppCompatActivity {
             arrowPaint.setStrokeWidth(10);
             arrowPaint.setStyle(Paint.Style.STROKE);
 
+            Paint arrowHeadPaint = new Paint();
+            arrowHeadPaint.setColor(Color.GREEN);
+            arrowHeadPaint.setStrokeWidth(7);
+            arrowHeadPaint.setStyle(Paint.Style.FILL);
+
             // Draws the arrows if the bitmap is not null
             if(mChemBitmap != null) {
 
                 for (Path path : arrows) {
                     canvas.drawPath(path, arrowPaint);
-                }
 
+                    if(pointsInPath.size() > 25) {
+                        // Also draw the arrow heads
+                        Path arrowhead = new Path();
+
+                        // We use the last and second last points in the path to find the correct angle
+                        // for the arrow head.
+                        int last = pointsInPath.size() - 1;
+                        PointF lastPoint = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
+                        int secondLast = last - 1;
+                        PointF nextLastPoint = new PointF(pointsInPath.get(secondLast-10).x, pointsInPath.get(secondLast-10).y);
+
+                        // These are the two extra points needed to make the arrowhead. These are
+                        // on either side of the second last point ASDF???? Too short?
+
+                        int headHalfWidth = 100;
+                        double theta = getAngle(lastPoint, nextLastPoint);
+
+                        PointF point1 = new PointF((float)Math.sin(theta) * headHalfWidth + nextLastPoint.x,
+                                -1*(float)Math.cos(theta) * headHalfWidth + nextLastPoint.y);
+
+                        PointF point2 = new PointF(-1*(float)Math.sin(theta) * headHalfWidth + nextLastPoint.x,
+                                (float)Math.cos(theta) * headHalfWidth + nextLastPoint.y);
+
+                        // Drawing the head now that the points are known
+                        arrowhead.moveTo(lastPoint.x, lastPoint.y);
+                        arrowhead.lineTo(point1.x, point1.y);
+                        arrowhead.lineTo(nextLastPoint.x, nextLastPoint.y);
+                        arrowhead.lineTo(point2.x, point2.y);
+
+                        canvas.drawPath(arrowhead, arrowHeadPaint);
+                    }
+                }
             }
         }
 
+
+
         /*
-         * This method catches what the user draws on the screen.
+         * This method catches and stores the arrows that the user draws on the screen.
          */
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -176,6 +225,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
                     endPoint.x = x;
                     endPoint.y = y;
                     arrow.lineTo(x, y);
+                    pointsInPath.add(new PointF(x,y));
 
                     invalidate();
                     break;
