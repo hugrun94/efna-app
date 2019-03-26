@@ -1,11 +1,14 @@
 package com.example.efnaapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -21,11 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import static android.graphics.Color.BLUE;
-
-
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
+ * The class assumes that all components (i.e. atoms, bonds, electron pairs, hydrogen atoms, any plus-
+ * signs between chemicals and arrows that point from reacting chemicals to product chemicals) have
+ * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
 public class RenderFromFileActivity extends AppCompatActivity {
@@ -33,21 +36,12 @@ public class RenderFromFileActivity extends AppCompatActivity {
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
 
-    // Bitmap is necessary for being able to draw on the screen
-    private Bitmap mBitmap;
-    private int x = 500;
-    private int y = 500;
+    private Bitmap mChemBitmap;
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
-    // Need a class/method that:
-    // CHECK - reads config file and stores coordinates of items to draw
-    // goes through through this info and draws items in correct coordinates
-
-    // New class for:
-    // getting user tapping coordinates (class must implement onTouchListener)
-    //      ("class <Name> extends Activity implements onTouchListener")
+    // Need new class for:
     // comparing those to coordinates of chemicals
 
 
@@ -95,24 +89,56 @@ public class RenderFromFileActivity extends AppCompatActivity {
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
         addContentView(myCanvas, layoutParams);
+
+        myCanvas.setOnTouchListener(myCanvas);
+        myCanvas.setDrawingCacheEnabled(true);
+        mChemBitmap = myCanvas.getDrawingCache();
     }
 
     /**
-     * This class has the drawing logic of all drawn chemical compounds and user-drawn arrows.
+     * This class has the drawing logic of all chemical compounds and user-drawn arrows(/paths).
      */
     private class MyCanvas extends View implements View.OnTouchListener {
 
-        Bitmap bitmap;
-        int x, y;
+        private float x, y;
+        private Path arrow = new Path();
+        private ArrayList<PointF> pointsInPath = new ArrayList<>();
+        private ArrayList<Path> arrows = new ArrayList<>();
+        private ArrayList<Path> arrowHeads = new ArrayList<>();
 
         public MyCanvas(Context context){
             super(context);
+        }
+
+        /**
+         * Calculates the angle between two points in radians.
+         */
+        private double getAngle(PointF point1, PointF point2){
+            double dx = point1.x - point2.x;
+            double dy = point2.y - point1.y;  // Putting "negative" value on the y to account for
+                                              // Android's coordinate system
+            return Math.atan2(dy, dx);
+        }
+
+        /**
+         * Determines the direction of the arrow head (left/right, down/up) depending on either the
+         * x or y coordinates of two points.
+         * @param num1 represents the last point in the path,
+         * @param num2 represents some previous point in the same path
+         */
+        private int getDirection(float num1, float num2){
+            int direction = 1;
+            if(num2-num1 < 0){
+                direction = -1;
+            }
+            return direction;
         }
 
         @Override
@@ -120,36 +146,141 @@ public class RenderFromFileActivity extends AppCompatActivity {
             super.draw(canvas);
 
             Paint background = new Paint();
-            background.setColor(Color.parseColor("#112288")); // Background colour
-
+            background.setColor(Color.parseColor("#335599")); // Background colour.
             background.setStyle(Paint.Style.FILL);
+
             Paint symbol = new Paint();
-            symbol.setColor(Color.YELLOW);
-            symbol.setTextSize(100);
-            symbol.setStyle(Paint.Style.FILL);
+            symbol.setColor(Color.parseColor("#EEEE66")); // Colour of chemical compounds.
+            symbol.setTextSize((int)(maxX*(100.0/1920.0)));         // Text size is in proportion with
+            symbol.setStyle(Paint.Style.FILL);                      // device window size.
             symbol.setStrokeWidth(1);
 
             canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
             }
-            /*
 
-            Testing testing... delete this later asdf
-            if(mBitmap != null) {
-                mBitmap.setPixel(x, y, Color.YELLOW);
-                canvas.drawBitmap(mBitmap, x, y, paint);
-            }*/
+            Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
+            arrowPaint.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
+            arrowPaint.setStrokeWidth(10);
+            arrowPaint.setStyle(Paint.Style.STROKE);
+
+            Paint arrowHeadPaint = new Paint();
+            arrowHeadPaint.setColor(Color.GREEN);
+            arrowHeadPaint.setStrokeWidth(7);
+            arrowHeadPaint.setStyle(Paint.Style.FILL);
+
+            // Draws the arrows if the bitmap is not null
+            if(mChemBitmap != null) {
+
+                for (Path path : arrows) {
+                    canvas.drawPath(path, arrowPaint);
+
+                }
+
+                for (Path path : arrowHeads) {
+                    canvas.drawPath(path, arrowHeadPaint);
+                }
+            }
         }
 
         /*
-         * This method catches what the user draws on the screen and turns it into arrows that will
-         * make chemical reactions happen.
+         * This method catches and stores the arrows that the user draws on the screen.
          */
         @Override
-        public boolean onTouch(View arg0, MotionEvent arg1) {
-            // todo
-            return false;
+        public boolean onTouch(View view, MotionEvent event) {
+
+            x = event.getX();
+            y = event.getY();
+
+            PointF endPoint = new PointF(0,0);
+
+            switch (event.getAction())
+            {
+                case MotionEvent.ACTION_DOWN:
+                    endPoint = new PointF();
+                    arrow = new Path();
+                    endPoint.x = x;
+                    endPoint.y = y;
+
+                    arrow.moveTo(endPoint.x,endPoint.y);
+                    arrows.add(arrow);
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    endPoint.x = x;
+                    endPoint.y = y;
+                    arrow.lineTo(x, y);
+                    pointsInPath.add(new PointF(x,y));
+
+                    invalidate();
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    endPoint.x = x;
+                    endPoint.y = y;
+
+                    ////
+
+                    if(pointsInPath.size() > 5) {
+
+                        Path arrowhead = new Path();
+
+                        // We use the last and 8th last points in the path to find the correct angle
+                        // for the arrow head.
+
+                        int last = pointsInPath.size() - 1;
+                        PointF lastPointInPath = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
+                        PointF somePreviousPoint = new PointF(pointsInPath.get(last-5).x, pointsInPath.get(last-5).y);
+
+                        // The direction of the arrow head:
+                        double angleLastSecondLast = getAngle(somePreviousPoint, lastPointInPath);
+
+                        // Finding the correct placement for the base of the arrow:
+                        int arrowHeadLength = 120;
+
+                        float baseY = (float)Math.sin(angleLastSecondLast) * arrowHeadLength
+                                * getDirection(lastPointInPath.y, somePreviousPoint.y);
+
+                        float baseX = (float)Math.sqrt(arrowHeadLength * arrowHeadLength + baseY * baseY)
+                                * getDirection(lastPointInPath.x, somePreviousPoint.x);
+
+                        PointF arrowHeadBasePoint = new PointF(lastPointInPath.x + baseX, lastPointInPath.y + baseY);
+
+                        System.out.println("------------------------------------------------------");
+                        System.out.println("------------------------------------------------------");
+                        System.out.println("------------------------" + angleLastSecondLast + "------------------------");
+
+                        int headHalfWidth = 45;
+
+                        // Below are the two extra points needed to make the arrowhead. These are
+                        // on either side of the base of the arrow head, making a triangle.
+
+                        float dx = (float)Math.sin(angleLastSecondLast) * headHalfWidth;
+                        float dy = (float)Math.cos(angleLastSecondLast) * headHalfWidth;
+
+                        PointF point1 = new PointF(arrowHeadBasePoint.x + dx, arrowHeadBasePoint.y - dy);
+                        PointF point2 = new PointF(arrowHeadBasePoint.x - dx, arrowHeadBasePoint.y + dy);
+
+                        // Drawing the head now that the points are known
+                        arrowhead.moveTo(lastPointInPath.x, lastPointInPath.y);
+                        arrowhead.lineTo(point1.x, point1.y);
+                        arrowhead.lineTo(point2.x, point2.y);
+
+                        arrowHeads.add(arrowhead);
+                    }
+
+                    ////
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            mChemBitmap = view.getDrawingCache();
+            view.invalidate();
+            return true;
         }
     }
 
@@ -167,17 +298,14 @@ public class RenderFromFileActivity extends AppCompatActivity {
         maxX = mdispSize.x;
         maxY = mdispSize.y;
 
-        // Stores items and their coordinates from config file to be able to draw them in the
-        // right place
+        // Stores items and their coordinates from config file to be able to draw them in the right place
         componentsToDraw = configFileToCoordinates();
 
         drawCompoundsFromCoordinates(componentsToDraw);
 
-        // ASDF nota drawPath til að teikna örvarnar frá notanda inn á
         // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles?
-        // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða
-        //      fyrirbæri; : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað
-        //      en hreinn texti.
+        // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
+        //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
         //      (kannski nota bara drawLine fyrir -- og jafnvel | líka? Gæti verið vesen)
     }
 }
