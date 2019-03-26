@@ -111,6 +111,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
         private Path arrow = new Path();
         private ArrayList<PointF> pointsInPath = new ArrayList<>();
         private ArrayList<Path> arrows = new ArrayList<>();
+        private ArrayList<Path> arrowHeads = new ArrayList<>();
 
         public MyCanvas(Context context){
             super(context);
@@ -121,9 +122,23 @@ public class RenderFromFileActivity extends AppCompatActivity {
          */
         private double getAngle(PointF point1, PointF point2){
             double dx = point1.x - point2.x;
-            double dy = point2.y - point1.y;
-
+            double dy = point2.y - point1.y;  // Putting "negative" value on the y to account for
+                                              // Android's coordinate system
             return Math.atan2(dy, dx);
+        }
+
+        /**
+         * Determines the direction of the arrow head (left/right, down/up) depending on either the
+         * x or y coordinates of two points.
+         * @param num1 represents the last point in the path,
+         * @param num2 represents some previous point in the same path
+         */
+        private int getDirection(float num1, float num2){
+            int direction = 1;
+            if(num2-num1 < 0){
+                direction = -1;
+            }
+            return direction;
         }
 
         @Override
@@ -161,42 +176,13 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 for (Path path : arrows) {
                     canvas.drawPath(path, arrowPaint);
 
-                    if(pointsInPath.size() > 25) {
-                        // Also draw the arrow heads
-                        Path arrowhead = new Path();
+                }
 
-                        // We use the last and second last points in the path to find the correct angle
-                        // for the arrow head.
-                        int last = pointsInPath.size() - 1;
-                        PointF lastPoint = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
-                        int secondLast = last - 1;
-                        PointF nextLastPoint = new PointF(pointsInPath.get(secondLast-10).x, pointsInPath.get(secondLast-10).y);
-
-                        // These are the two extra points needed to make the arrowhead. These are
-                        // on either side of the second last point ASDF???? Too short?
-
-                        int headHalfWidth = 100;
-                        double theta = getAngle(lastPoint, nextLastPoint);
-
-                        PointF point1 = new PointF((float)Math.sin(theta) * headHalfWidth + nextLastPoint.x,
-                                -1*(float)Math.cos(theta) * headHalfWidth + nextLastPoint.y);
-
-                        PointF point2 = new PointF(-1*(float)Math.sin(theta) * headHalfWidth + nextLastPoint.x,
-                                (float)Math.cos(theta) * headHalfWidth + nextLastPoint.y);
-
-                        // Drawing the head now that the points are known
-                        arrowhead.moveTo(lastPoint.x, lastPoint.y);
-                        arrowhead.lineTo(point1.x, point1.y);
-                        arrowhead.lineTo(nextLastPoint.x, nextLastPoint.y);
-                        arrowhead.lineTo(point2.x, point2.y);
-
-                        canvas.drawPath(arrowhead, arrowHeadPaint);
-                    }
+                for (Path path : arrowHeads) {
+                    canvas.drawPath(path, arrowHeadPaint);
                 }
             }
         }
-
-
 
         /*
          * This method catches and stores the arrows that the user draws on the screen.
@@ -233,6 +219,58 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     endPoint.x = x;
                     endPoint.y = y;
+
+                    ////
+
+                    if(pointsInPath.size() > 5) {
+
+                        Path arrowhead = new Path();
+
+                        // We use the last and 8th last points in the path to find the correct angle
+                        // for the arrow head.
+
+                        int last = pointsInPath.size() - 1;
+                        PointF lastPointInPath = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
+                        PointF somePreviousPoint = new PointF(pointsInPath.get(last-5).x, pointsInPath.get(last-5).y);
+
+                        // The direction of the arrow head:
+                        double angleLastSecondLast = getAngle(somePreviousPoint, lastPointInPath);
+
+                        // Finding the correct placement for the base of the arrow:
+                        int arrowHeadLength = 120;
+
+                        float baseY = (float)Math.sin(angleLastSecondLast) * arrowHeadLength
+                                * getDirection(lastPointInPath.y, somePreviousPoint.y);
+
+                        float baseX = (float)Math.sqrt(arrowHeadLength * arrowHeadLength + baseY * baseY)
+                                * getDirection(lastPointInPath.x, somePreviousPoint.x);
+
+                        PointF arrowHeadBasePoint = new PointF(lastPointInPath.x + baseX, lastPointInPath.y + baseY);
+
+                        System.out.println("------------------------------------------------------");
+                        System.out.println("------------------------------------------------------");
+                        System.out.println("------------------------" + angleLastSecondLast + "------------------------");
+
+                        int headHalfWidth = 45;
+
+                        // Below are the two extra points needed to make the arrowhead. These are
+                        // on either side of the base of the arrow head, making a triangle.
+
+                        float dx = (float)Math.sin(angleLastSecondLast) * headHalfWidth;
+                        float dy = (float)Math.cos(angleLastSecondLast) * headHalfWidth;
+
+                        PointF point1 = new PointF(arrowHeadBasePoint.x + dx, arrowHeadBasePoint.y - dy);
+                        PointF point2 = new PointF(arrowHeadBasePoint.x - dx, arrowHeadBasePoint.y + dy);
+
+                        // Drawing the head now that the points are known
+                        arrowhead.moveTo(lastPointInPath.x, lastPointInPath.y);
+                        arrowhead.lineTo(point1.x, point1.y);
+                        arrowhead.lineTo(point2.x, point2.y);
+
+                        arrowHeads.add(arrowhead);
+                    }
+
+                    ////
 
                     break;
 
