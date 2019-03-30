@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+// ASDF CHANGE THE NAME OF THIS CLASS
+
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
  * The class assumes that all components (i.e. atoms, bonds, electron pairs, hydrogen atoms, any plus-
@@ -31,22 +33,29 @@ import java.util.ArrayList;
  * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
-public class RenderFromFileActivity extends AppCompatActivity {
+public class RenderChemsAndArrows extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
 
+    // The bitmap used for everything to be rendered
     private Bitmap mChemBitmap;
+
+    // Holds all individual paths that the user draws on the screen
+    private ArrayList<Path> arrows;
+
+    // Stores the points of the path
+    private ArrayList<PointF> pointsInPath;
+
+    private ArrayList<PointF> firstLastInPaths = new ArrayList<>();
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
-    // Need new class for:
-    // comparing those to coordinates of chemicals
-
 
     /** This method reads a file which contains symbols (atoms, bonds, lone electron pairs, ...)
      *  along with their coordinates.
+     *  ASDF EYÐA ÞESSUM EF EKKI NOTAÐUR
      *  @return an ArrayList of String arrays where each array contains an item to be drawn along
      *  with its screen coordinates.
      */
@@ -109,9 +118,8 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         private float x, y;
         private Path arrow = new Path();
-        private ArrayList<PointF> pointsInPath = new ArrayList<>(); // Stores the points of the path
+        //private ArrayList<PointF> pointsInPath = new ArrayList<>(); // Stores the points of the path
                                                                     // drawn by the user
-        private ArrayList<Path> arrows = new ArrayList<>();         // Holds all individual paths
         private ArrayList<Path> arrowHeads = new ArrayList<>();     // Holds the heads of all arrows (paths)
 
         public MyCanvas(Context context){
@@ -159,7 +167,14 @@ public class RenderFromFileActivity extends AppCompatActivity {
             // Drawing atoms, bonds and all other components onto the screen
             canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
-                canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
+                // TODO Put more conditionals for double/triple bonds
+
+                if(f.length == 5){
+                    canvas.drawLine(Integer.parseInt(f[1]), Integer.parseInt(f[2]), Integer.parseInt(f[3]), Integer.parseInt(f[4]) , symbol);
+                }
+                else{
+                    canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
+                }
             }
 
             // Drawing the path that the user gives via dragging a finger across the screen
@@ -207,6 +222,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
                     arrow = new Path();
                     endPoint.x = x;
                     endPoint.y = y;
+                    firstLastInPaths.add(new PointF(x, y));
 
                     arrow.moveTo(endPoint.x,endPoint.y);
                     arrows.add(arrow);
@@ -224,7 +240,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     endPoint.x = x;
                     endPoint.y = y;
-
+                    firstLastInPaths.add(new PointF(x, y));
 
                     if(pointsInPath.size() > 3) {
 
@@ -280,6 +296,15 @@ public class RenderFromFileActivity extends AppCompatActivity {
         }
     }
 
+    // ASDF eyða? Declare-a arrows bara í MyCanvas?
+    public ArrayList<Path> getPaths(){
+        return arrows;
+    }
+
+    public ArrayList<PointF> getPathFirstsAndLasts() {
+        return firstLastInPaths;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
@@ -302,7 +327,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         drawCompoundsFromCoordinates(componentsToDraw);
 
-        // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles?
         // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
         //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
         //      (kannski nota bara drawLine fyrir -- og jafnvel | líka? Gæti verið vesen)
