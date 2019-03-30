@@ -109,9 +109,10 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         private float x, y;
         private Path arrow = new Path();
-        private ArrayList<PointF> pointsInPath = new ArrayList<>();
-        private ArrayList<Path> arrows = new ArrayList<>();
-        private ArrayList<Path> arrowHeads = new ArrayList<>();
+        private ArrayList<PointF> pointsInPath = new ArrayList<>(); // Stores the points of the path
+                                                                    // drawn by the user
+        private ArrayList<Path> arrows = new ArrayList<>();         // Holds all individual paths
+        private ArrayList<Path> arrowHeads = new ArrayList<>();     // Holds the heads of all arrows (paths)
 
         public MyCanvas(Context context){
             super(context);
@@ -123,7 +124,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
         private double getAngle(PointF point1, PointF point2){
             double dx = point1.x - point2.x;
             double dy = point2.y - point1.y;  // Putting "negative" value on the y to account for
-                                              // Android's coordinate system
+                                              // Android's coordinate system vs Cartesian coordinates
             return Math.atan2(dy, dx);
         }
 
@@ -131,7 +132,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
          * Determines the direction of the arrow head (left/right, down/up) depending on either the
          * x or y coordinates of two points.
          * @param num1 represents the last point in the path,
-         * @param num2 represents some previous point in the same path
+         * @param num2 represents the 3rd last point in the same path
          */
         private int getDirection(float num1, float num2){
             int direction = 1;
@@ -146,7 +147,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
             super.draw(canvas);
 
             Paint background = new Paint();
-            background.setColor(Color.parseColor("#335599")); // Background colour.
+            background.setColor(Color.parseColor("#335599"));
             background.setStyle(Paint.Style.FILL);
 
             Paint symbol = new Paint();
@@ -155,11 +156,13 @@ public class RenderFromFileActivity extends AppCompatActivity {
             symbol.setStyle(Paint.Style.FILL);                      // device window size.
             symbol.setStrokeWidth(1);
 
+            // Drawing atoms, bonds and all other components onto the screen
             canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
             }
 
+            // Drawing the path that the user gives via dragging a finger across the screen
             Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
             arrowPaint.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
             arrowPaint.setStrokeWidth(10);
@@ -170,7 +173,8 @@ public class RenderFromFileActivity extends AppCompatActivity {
             arrowHeadPaint.setStrokeWidth(7);
             arrowHeadPaint.setStyle(Paint.Style.FILL);
 
-            // Draws the arrows if the bitmap is not null
+            // Draws the arrows if the bitmap is not null.
+            // First the arrow shafts, then the heads.
             if(mChemBitmap != null) {
 
                 for (Path path : arrows) {
@@ -220,8 +224,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
                     endPoint.x = x;
                     endPoint.y = y;
 
-                    ////
-
                     if(pointsInPath.size() > 5) {
 
                         Path arrowhead = new Path();
@@ -270,7 +272,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
                         arrowHeads.add(arrowhead);
                     }
 
-                    ////
 
                     break;
 
