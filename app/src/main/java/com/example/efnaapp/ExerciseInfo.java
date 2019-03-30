@@ -21,11 +21,13 @@ class ExerciseInfo {
 
     // List of exercises, stored as CDK Reactions which can store molecules as reactants (left side of a reaction)
     // and products (right side of a reaction)
+    // TODO: List for each exercise type
     private ArrayList<Exercise> exerciseList = new ArrayList<>();
 
     // Constructor which reads in all molecules from the exercises.smiles resource file and stores them according to
     // the format given in exercise_format.
     ExerciseInfo(Context ctxt) {
+        // TODO: Change to reading from smiles and format txt files to JSON parsing
         ArrayList<String> listOfLines = new ArrayList<>();
         try{
             InputStream fstream = ctxt.getResources().openRawResource(R.raw.exercise_format);
