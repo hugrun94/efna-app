@@ -106,29 +106,30 @@ class ExerciseInfo {
         // Class which gives atoms coordinates
         StructureDiagramGenerator sdg = new StructureDiagramGenerator();
         try {
-            double factor = 100;
+            double factor = 80;
             double[] minmax;
-            double xOffset = 0;
-            double yOffset = 1;
-            double yMax = 0;
+            double xOffset;
+            double yOffset;
+            double xStart = 1;
             int index = 0;
             // Give reactants coordinates and add to componentsToDraw
             for (IAtomContainer mol : reactants) {
                 if (index > 0) {
-                    componentsToDraw.add(new String[]{"+", Integer.toString(500), Integer.toString((int) (yOffset*factor))});
-                    yOffset += 1;
+                    componentsToDraw.add(new String[]{"+", Integer.toString((int) (xStart*factor)), Integer.toString(500)});
+                    xStart++;
                 }
                 sdg.generateCoordinates(mol);
                 minmax = GeometryUtil.getMinMax(mol);
                 xOffset = Math.abs(0 - minmax[0]);
-                yOffset += Math.abs(0 - minmax[1]);
-                // Move the molecule so all coordinates are positive and all y >= 1
+                yOffset = Math.abs(0 - minmax[1]);
+                // Move the molecule so all coordinates are positive
                 GeometryUtil.translate2D(mol, xOffset, yOffset);
                 Point2d center = new Point2d(GeometryUtil.get2DCenter(mol));
+                center.set((center.x + xStart)*factor, 500);
                 // Move the molecule so its center is in 0,0, scale, and move back to the scaled center y, with x = 500
                 GeometryUtil.translate2DCenterTo(mol, new Point2d(0, 0));
+                xStart += (minmax[2] - minmax[0]);
                 GeometryUtil.scaleMolecule(mol, factor);
-                center.set(500, center.y*factor);
                 GeometryUtil.translate2DCenterTo(mol, center);
                 // Add all atoms to the componentsToDraw for drawing
                 Iterable<IAtom> atoms = mol.atoms();
@@ -138,12 +139,9 @@ class ExerciseInfo {
                     component[1] = Integer.toString((int) atom.getPoint2d().x);
                     component[2] = Integer.toString((int) atom.getPoint2d().y);
                     componentsToDraw.add(component);
-                    if (atom.getPoint2d().y > yMax) {
-                        yMax = atom.getPoint2d().y;
-                    }
                 }
                 index++;
-                yOffset = yMax/factor + 1.5;
+                xStart++;
             }
 
             index = 0;
@@ -151,21 +149,22 @@ class ExerciseInfo {
             // Same process as above for the products
             for (IAtomContainer mol : products) {
                 if (index == 0) {
-                    componentsToDraw.add(new String[]{"V", Integer.toString(500), Integer.toString((int) (yOffset*factor))});
-                    yOffset += 1.5;
+                    componentsToDraw.add(new String[]{"->", Integer.toString((int) (xStart*factor)), Integer.toString(500)});
+                    xStart += 1.5;
                 } else {
-                    componentsToDraw.add(new String[]{"+", Integer.toString(500), Integer.toString((int) (yOffset*factor))});
-                    yOffset += 1;
+                    componentsToDraw.add(new String[]{"+", Integer.toString((int) (xStart*factor)), Integer.toString(500)});
+                    xStart++;
                 }
                 sdg.generateCoordinates(mol);
                 minmax = GeometryUtil.getMinMax(mol);
                 xOffset = Math.abs(0 - minmax[0]);
-                yOffset += Math.abs(0 - minmax[1]);
+                yOffset = Math.abs(0 - minmax[1]);
                 GeometryUtil.translate2D(mol, xOffset, yOffset);
                 Point2d center = new Point2d(GeometryUtil.get2DCenter(mol));
+                center.set((center.x+xStart)*factor, 500);
                 GeometryUtil.translate2DCenterTo(mol, new Point2d(0, 0));
+                xStart += (minmax[2] - minmax[0]);
                 GeometryUtil.scaleMolecule(mol, factor);
-                center.set(500, center.y*factor);
                 GeometryUtil.translate2DCenterTo(mol, center);
                 Iterable<IAtom> atoms = mol.atoms();
                 for (IAtom atom : atoms) {
@@ -174,9 +173,10 @@ class ExerciseInfo {
                     component[1] = Integer.toString((int) atom.getPoint2d().x);
                     component[2] = Integer.toString((int) atom.getPoint2d().y);
                     componentsToDraw.add(component);
-                    System.out.println(atom.getPoint2d().y);
+                    System.out.println(atom.getPoint2d().x);
                 }
                 index++;
+                xStart++;
             }
         } catch (CDKException e) {
             e.printStackTrace();
