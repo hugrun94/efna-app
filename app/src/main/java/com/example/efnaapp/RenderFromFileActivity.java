@@ -164,13 +164,14 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
             // Drawing the path that the user gives via dragging a finger across the screen
             Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
-            arrowPaint.setColor(Color.parseColor("#DD5599"));  // Colour of user-drawn arrows(/lines)
-            arrowPaint.setStrokeWidth(10);
+            int arrowColor = Color.parseColor("#DD5599");
+            arrowPaint.setColor(arrowColor);  // Colour of user-drawn arrows(/lines)
+            arrowPaint.setStrokeWidth(6);
             arrowPaint.setStyle(Paint.Style.STROKE);
 
             Paint arrowHeadPaint = new Paint();
-            arrowHeadPaint.setColor(Color.GREEN);
-            arrowHeadPaint.setStrokeWidth(7);
+            arrowHeadPaint.setColor(arrowColor);
+            arrowHeadPaint.setStrokeWidth(10);
             arrowHeadPaint.setStyle(Paint.Style.FILL);
 
             // Draws the arrows if the bitmap is not null.
@@ -224,36 +225,30 @@ public class RenderFromFileActivity extends AppCompatActivity {
                     endPoint.x = x;
                     endPoint.y = y;
 
-                    if(pointsInPath.size() > 5) {
+
+                    if(pointsInPath.size() > 3) {
 
                         Path arrowhead = new Path();
 
-                        // We use the last and 8th last points in the path to find the correct angle
+                        // We use the last and 3rd last points in the path to find the correct angle
                         // for the arrow head.
 
                         int last = pointsInPath.size() - 1;
                         PointF lastPointInPath = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
-                        PointF somePreviousPoint = new PointF(pointsInPath.get(last-5).x, pointsInPath.get(last-5).y);
+                        PointF somePreviousPoint = new PointF(pointsInPath.get(last-2).x, pointsInPath.get(last-2).y);
 
                         // The direction of the arrow head:
                         double angleLastSecondLast = getAngle(somePreviousPoint, lastPointInPath);
 
                         // Finding the correct placement for the base of the arrow:
-                        int arrowHeadLength = 120;
+                        int arrowHeadLength = 60;
 
-                        float baseY = (float)Math.sin(angleLastSecondLast) * arrowHeadLength
-                                * getDirection(lastPointInPath.y, somePreviousPoint.y);
+                        float baseDx = arrowHeadLength*(float)Math.cos(angleLastSecondLast);
+                        float baseDy = arrowHeadLength*(-1)*(float)Math.sin(angleLastSecondLast);
 
-                        float baseX = (float)Math.sqrt(arrowHeadLength * arrowHeadLength + baseY * baseY)
-                                * getDirection(lastPointInPath.x, somePreviousPoint.x);
+                        PointF arrowHeadBasePoint = new PointF(lastPointInPath.x + baseDx, lastPointInPath.y + baseDy);
 
-                        PointF arrowHeadBasePoint = new PointF(lastPointInPath.x + baseX, lastPointInPath.y + baseY);
-
-                        System.out.println("------------------------------------------------------");
-                        System.out.println("------------------------------------------------------");
-                        System.out.println("------------------------" + angleLastSecondLast + "------------------------");
-
-                        int headHalfWidth = 45;
+                        int headHalfWidth = 35;
 
                         // Below are the two extra points needed to make the arrowhead. These are
                         // on either side of the base of the arrow head, making a triangle.
