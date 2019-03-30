@@ -292,8 +292,11 @@ public class RenderFromFileActivity extends AppCompatActivity {
         maxX = mdispSize.x;
         maxY = mdispSize.y;
 
-        // Stores items and their coordinates from config file to be able to draw them in the right place
-        componentsToDraw = configFileToCoordinates();
+        // Stores items and their coordinates from config file to be able to draw them in the
+        // right place
+        ExerciseInfo info = new ExerciseInfo(this);
+        componentsToDraw = info.getExercise(0);
+
 
         drawCompoundsFromCoordinates(componentsToDraw);
 
