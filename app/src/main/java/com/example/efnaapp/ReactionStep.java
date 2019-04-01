@@ -17,19 +17,31 @@ public class ReactionStep {
 
     private ArrayList<PointF> firstLastPoints = render.getPathFirstsAndLasts();
 
-    private void hallo() {
+    // These ArrayLists store the source and destination points for all drawn arrows separately.
+    private ArrayList<PointF> origins = new ArrayList<>();
+    private ArrayList<PointF> destinations = new ArrayList<>();
+
+    private void getOriginAndDestinationCoordinates() {
 
         for(int i = 0; i <= firstLastPoints.size()-2; i += 2) {
 
-            PointF firstPoint = new PointF(firstLastPoints.get(i).x, firstLastPoints.get(i).y);
-            PointF lastPoint = new PointF(firstLastPoints.get(i+1).x, firstLastPoints.get(i+1).y);
+            origins.add(new PointF(firstLastPoints.get(i).x, firstLastPoints.get(i).y));
+            destinations.add(new PointF(firstLastPoints.get(i+1).x, firstLastPoints.get(i+1).y));
 
         }
     }
 
-    public void haee(){
-        hallo();
+    private void chemicalReaction(){
+        // Gets the source and moves the bond/lone pair to a destination
+
+        // If the origin is a bond, then delete that bond
+        // If the origin is a lone pair, make a bond from it and decrease atom charge
+
+        // If the destination is a bond, double it/triple it
+        // If the destination is an atom, increase its charge
     }
+
+
 
     // vinna með exercise til að breyta efnum
     // atomcontainermanipulator getur farið yfir efni og breytt þeim rétt.
