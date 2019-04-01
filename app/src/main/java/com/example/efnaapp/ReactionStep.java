@@ -24,7 +24,6 @@ public class ReactionStep {
             PointF firstPoint = new PointF(firstLastPoints.get(i).x, firstLastPoints.get(i).y);
             PointF lastPoint = new PointF(firstLastPoints.get(i+1).x, firstLastPoints.get(i+1).y);
 
-
         }
     }
 
@@ -36,6 +35,4 @@ public class ReactionStep {
     // atomcontainermanipulator getur farið yfir efni og breytt þeim rétt.
         // perceiveAtom....dót
     // geometryutil getclosestatom og bond
-
-
 }
