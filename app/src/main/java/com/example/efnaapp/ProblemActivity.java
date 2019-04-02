@@ -14,7 +14,8 @@ import java.util.ListIterator;
 
 public class ProblemActivity extends AppCompatActivity {
 
-    String items[] = new String[]{"floki", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik"};
+    private String items[] = new String[]{"floki", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik"};
+    private String[] exerciseList = new String[1]; // TODO add the exercises of the correct type to this list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,14 @@ public class ProblemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_problem);
 
         ListView listView = findViewById(R.id.coll1list);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+
+        // Get all the exercises of the type that is being shown:
+        // For all exercises of type <what is being asked for, what the user has clicked>
+
+        String exerciseType = "";
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items); // TODO Change items to exerciseList
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
