@@ -14,10 +14,31 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     public void goToMenu (View view) {
-
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
 
+    public void nextStep(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO make the next step in the reaction appear
+        //startActivity(intent);
+    }
 
+    public void prevStep(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO make the next step in the reaction appear
+        //startActivity(intent);
+    }
+
+    public void finish(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO finish exercise and see feedback
+        //startActivity(intent);
+    }
+
+    public void startAgain(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO restart the exercise
+        //startActivity(intent);
     }
 }
