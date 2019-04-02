@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-// ASDF CHANGE THE NAME OF THIS CLASS
-
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
  * The class assumes that all components (i.e. atoms, bonds, electron pairs, hydrogen atoms, any plus-
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
-public class RenderChemsAndArrows extends AppCompatActivity {
+public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
@@ -42,10 +40,10 @@ public class RenderChemsAndArrows extends AppCompatActivity {
     private Bitmap mChemBitmap;
 
     // Holds all individual paths that the user draws on the screen
-    private ArrayList<Path> arrows;
+    private ArrayList<Path> arrows = new ArrayList<>();
 
     // Stores the points of the path
-    private ArrayList<PointF> pointsInPath;
+    private ArrayList<PointF> pointsInPath = new ArrayList<>();
 
     private ArrayList<PointF> firstLastInPaths = new ArrayList<>();
 
@@ -59,6 +57,8 @@ public class RenderChemsAndArrows extends AppCompatActivity {
      *  @return an ArrayList of String arrays where each array contains an item to be drawn along
      *  with its screen coordinates.
      */
+
+    /*
     private ArrayList<String[]> configFileToCoordinates(){
 
         ArrayList<String> listOfLines = new ArrayList<>();
@@ -92,7 +92,7 @@ public class RenderChemsAndArrows extends AppCompatActivity {
         }
 
         return elementsToDraw;
-    }
+    }/*
 
 
     /**
@@ -296,11 +296,6 @@ public class RenderChemsAndArrows extends AppCompatActivity {
         }
     }
 
-    // ASDF eyða? Declare-a arrows bara í MyCanvas?
-    public ArrayList<Path> getPaths(){
-        return arrows;
-    }
-
     public ArrayList<PointF> getPathFirstsAndLasts() {
         return firstLastInPaths;
     }
@@ -309,7 +304,7 @@ public class RenderChemsAndArrows extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_render_from_file);
+        setContentView(R.layout.activity_render_chems_and_arrows);
 
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();

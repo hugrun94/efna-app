@@ -1,7 +1,6 @@
 package com.example.efnaapp;
 
 
-import android.graphics.Path;
 import android.graphics.PointF;
 import java.util.ArrayList;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
  */
 public class ReactionStep {
 
-    private RenderChemsAndArrows render = new RenderChemsAndArrows();
+    private RenderChemsAndArrowsActivity render = new RenderChemsAndArrowsActivity();
 
     //private ArrayList<Path> arrows =  render.getPaths();
 
@@ -32,7 +31,7 @@ public class ReactionStep {
     }
 
     private void chemicalReaction(){
-        // Gets the source and moves the bond/lone pair to a destination
+        // Gets each origin and moves the bond/lone pair to its destination
 
         // If the origin is a bond, then delete that bond
         // If the origin is a lone pair, make a bond from it and decrease atom charge
