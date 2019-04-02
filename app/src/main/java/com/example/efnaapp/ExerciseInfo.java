@@ -96,7 +96,5 @@ class ExerciseInfo {
         }
     }
 
-    ArrayList<String[]> getExercise(int id) {
-        return exerciseList.get(id).getComponentsToDraw();
-    }
+    Exercise getExercise(int id) { return exerciseList.get(id); }
 }

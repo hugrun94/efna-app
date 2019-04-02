@@ -1,5 +1,6 @@
 package com.example.efnaapp;
 
+import com.google.common.collect.Iterables;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryUtil;
@@ -27,7 +28,7 @@ class Exercise {
 
     private void calcCoords() {
         int numReactants = reaction.getReactantCount();
-        Iterable<IAtomContainer> agents = reaction.getAgents().atomContainers();
+        Iterable<IAtomContainer> agents = Iterables.concat(reaction.getReactants().atomContainers(), reaction.getProducts().atomContainers());
         // Class which gives atoms coordinates
         StructureDiagramGenerator sdg = new StructureDiagramGenerator();
         try {
@@ -74,7 +75,7 @@ class Exercise {
 
     ArrayList<String[]> getComponentsToDraw() {
         int numReactants = reaction.getReactantCount();
-        Iterable<IAtomContainer> agents = reaction.getAgents().atomContainers();
+        Iterable<IAtomContainer> agents = Iterables.concat(reaction.getReactants().atomContainers(), reaction.getProducts().atomContainers());
         ArrayList<String[]> componentsToDraw = new ArrayList<>();
         int index = 0;
         for (IAtomContainer mol : agents) {

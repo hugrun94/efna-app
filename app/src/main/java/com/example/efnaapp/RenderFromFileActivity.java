@@ -295,7 +295,8 @@ public class RenderFromFileActivity extends AppCompatActivity {
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
         ExerciseInfo info = new ExerciseInfo(this);
-        componentsToDraw = info.getExercise(0);
+        Exercise exercise = info.getExercise(0);
+        componentsToDraw = exercise.getComponentsToDraw();
 
 
         drawCompoundsFromCoordinates(componentsToDraw);
