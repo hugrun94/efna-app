@@ -31,25 +31,34 @@ import java.util.ArrayList;
  * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
-public class RenderFromFileActivity extends AppCompatActivity {
+public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
     int maxX, maxY;
 
+    // The bitmap used for everything to be rendered
     private Bitmap mChemBitmap;
+
+    // Holds all individual paths that the user draws on the screen
+    private ArrayList<Path> arrows = new ArrayList<>();
+
+    // Stores the points of the path
+    private ArrayList<PointF> pointsInPath = new ArrayList<>();
+
+    private ArrayList<PointF> firstLastInPaths = new ArrayList<>();
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
-    // Need new class for:
-    // comparing those to coordinates of chemicals
-
 
     /** This method reads a file which contains symbols (atoms, bonds, lone electron pairs, ...)
      *  along with their coordinates.
+     *  ASDF EYÐA ÞESSUM EF EKKI NOTAÐUR
      *  @return an ArrayList of String arrays where each array contains an item to be drawn along
      *  with its screen coordinates.
      */
+
+    /*
     private ArrayList<String[]> configFileToCoordinates(){
 
         ArrayList<String> listOfLines = new ArrayList<>();
@@ -83,7 +92,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
         }
 
         return elementsToDraw;
-    }
+    }/*
 
 
     /**
@@ -109,9 +118,9 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         private float x, y;
         private Path arrow = new Path();
-        private ArrayList<PointF> pointsInPath = new ArrayList<>();
-        private ArrayList<Path> arrows = new ArrayList<>();
-        private ArrayList<Path> arrowHeads = new ArrayList<>();
+        //private ArrayList<PointF> pointsInPath = new ArrayList<>(); // Stores the points of the path
+                                                                    // drawn by the user
+        private ArrayList<Path> arrowHeads = new ArrayList<>();     // Holds the heads of all arrows (paths)
 
         public MyCanvas(Context context){
             super(context);
@@ -123,7 +132,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
         private double getAngle(PointF point1, PointF point2){
             double dx = point1.x - point2.x;
             double dy = point2.y - point1.y;  // Putting "negative" value on the y to account for
-                                              // Android's coordinate system
+                                              // Android's coordinate system vs Cartesian coordinates
             return Math.atan2(dy, dx);
         }
 
@@ -131,7 +140,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
          * Determines the direction of the arrow head (left/right, down/up) depending on either the
          * x or y coordinates of two points.
          * @param num1 represents the last point in the path,
-         * @param num2 represents some previous point in the same path
+         * @param num2 represents the 3rd last point in the same path
          */
         private int getDirection(float num1, float num2){
             int direction = 1;
@@ -146,7 +155,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
             super.draw(canvas);
 
             Paint background = new Paint();
-            background.setColor(Color.parseColor("#335599")); // Background colour.
+            background.setColor(Color.parseColor("#335599"));
             background.setStyle(Paint.Style.FILL);
 
             Paint symbol = new Paint();
@@ -155,11 +164,20 @@ public class RenderFromFileActivity extends AppCompatActivity {
             symbol.setStyle(Paint.Style.FILL);                      // device window size.
             symbol.setStrokeWidth(1);
 
+            // Drawing atoms, bonds and all other components onto the screen
             canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
-                canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
+                // TODO Put more conditionals for double/triple bonds
+
+                if(f.length == 5){
+                    canvas.drawLine(Integer.parseInt(f[1]), Integer.parseInt(f[2]), Integer.parseInt(f[3]), Integer.parseInt(f[4]) , symbol);
+                }
+                else{
+                    canvas.drawText(f[0], Integer.parseInt(f[1]), Integer.parseInt(f[2]), symbol);
+                }
             }
 
+            // Drawing the path that the user gives via dragging a finger across the screen
             Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
             int arrowColor = Color.parseColor("#DD5599");
             arrowPaint.setColor(arrowColor);  // Colour of user-drawn arrows(/lines)
@@ -171,7 +189,8 @@ public class RenderFromFileActivity extends AppCompatActivity {
             arrowHeadPaint.setStrokeWidth(10);
             arrowHeadPaint.setStyle(Paint.Style.FILL);
 
-            // Draws the arrows if the bitmap is not null
+            // Draws the arrows if the bitmap is not null.
+            // First the arrow shafts, then the heads.
             if(mChemBitmap != null) {
 
                 for (Path path : arrows) {
@@ -203,6 +222,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
                     arrow = new Path();
                     endPoint.x = x;
                     endPoint.y = y;
+                    firstLastInPaths.add(new PointF(x, y));
 
                     arrow.moveTo(endPoint.x,endPoint.y);
                     arrows.add(arrow);
@@ -220,8 +240,7 @@ public class RenderFromFileActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     endPoint.x = x;
                     endPoint.y = y;
-
-                    ////
+                    firstLastInPaths.add(new PointF(x, y));
 
                     if(pointsInPath.size() > 3) {
 
@@ -264,7 +283,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
                         arrowHeads.add(arrowhead);
                     }
 
-                    ////
 
                     break;
 
@@ -278,11 +296,15 @@ public class RenderFromFileActivity extends AppCompatActivity {
         }
     }
 
+    public ArrayList<PointF> getPathFirstsAndLasts() {
+        return firstLastInPaths;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_render_from_file);
+        setContentView(R.layout.activity_render_chems_and_arrows);
 
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();
@@ -301,7 +323,6 @@ public class RenderFromFileActivity extends AppCompatActivity {
 
         drawCompoundsFromCoordinates(componentsToDraw);
 
-        // drawPoint fyrir rafeindapör eða sér fall sem teiknar 2 filled circles?
         // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
         //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
         //      (kannski nota bara drawLine fyrir -- og jafnvel | líka? Gæti verið vesen)

@@ -1,7 +1,9 @@
 package com.example.efnaapp;
 
 import android.content.Context;
+import android.graphics.PointF;
 
+import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -94,6 +96,21 @@ class ExerciseInfo {
         catch (CDKException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns the atom container that the user is pointing to by touching.
+     * @param point the coordinates where the user has touched down
+     * @return the atomContainer that resides on this point
+     */
+    public AtomContainer getAtomContainerFromCoordinates(PointF point){
+        AtomContainer atomContainer = new AtomContainer();
+
+        // Get all atom containers on screen
+
+        // Return the one that occupies the space where "point" lands
+
+        return atomContainer;
     }
 
     Exercise getExercise(int id) { return exerciseList.get(id); }
