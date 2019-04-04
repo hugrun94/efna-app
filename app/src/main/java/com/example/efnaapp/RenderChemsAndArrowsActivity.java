@@ -2,6 +2,7 @@ package com.example.efnaapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -92,8 +93,38 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
 
         return elementsToDraw;
-    }/*
+    }*/
 
+
+     public void goToMenu (View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void nextStep(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO make the next step in the reaction appear
+        //startActivity(intent);
+    }
+
+    public void prevStep(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO make the next step in the reaction appear
+        //startActivity(intent);
+    }
+
+    public void finish(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO finish exercise and see feedback
+        // Tag the exercise as finished in this session
+        //startActivity(intent);
+    }
+
+    public void startAgain(View view){
+        //Intent intent = new Intent(this, TODO.class);
+        // TODO restart the exercise
+        //startActivity(intent);
+    }/*
 
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
