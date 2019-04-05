@@ -16,6 +16,8 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -124,7 +126,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TODO.class);
         // TODO restart the exercise
         //startActivity(intent);
-    }/*
+    }
 
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
@@ -335,12 +337,24 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_render_chems_and_arrows);
+        setContentView(R.layout.activity_display);
 
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();
         Point mdispSize = new Point();
         display.getSize(mdispSize);
+
+        //ArrayList<View> allButtons; ASDF stroka út ef framelayout?
+        //allButtons = ((LinearLayout) findViewById(R.id.button_container)).getTouchables();
+
+        Button[] buttons = new Button[5];
+
+        for (int i = 0; i < 5; i++) {
+            int id = getResources().getIdentifier("button"+i, "id", getPackageName());
+            buttons[i] = findViewById(id);
+        }
+
+        buttons[0].bringToFront();
 
         maxX = mdispSize.x;
         maxY = mdispSize.y;
