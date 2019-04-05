@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD:app/src/main/res/layout/activity_render_from_file.xml
     android:screenOrientation="landscape"
     tools:context=".RenderFromFileActivity">
+=======
+    tools:context=".RenderChemsAndArrowsActivity">
+>>>>>>> 179b512c6377e381ac52469c428fc5e4f342d496:app/src/main/res/layout/activity_render_chems_and_arrows.xml
 
 </android.support.constraint.ConstraintLayout>
