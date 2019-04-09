@@ -12,14 +12,14 @@ import android.widget.ListView;
  * Displays a list of all exercises of a given reaction type. The reaction type depends on the name
  * of the button.
  */
-public class ProblemsActivity extends AppCompatActivity {
+public class ProblemActivity extends AppCompatActivity {
 
     private String[] exerciseList = new String[]{"floki", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik", "egill", "hinrik"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_problems);
+        setContentView(R.layout.activity_problem);
 
         ListView listView = findViewById(R.id.coll1list);
 
