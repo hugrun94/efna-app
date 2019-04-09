@@ -157,7 +157,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             symbol.setStrokeWidth(1);
 
             // Drawing atoms, bonds and all other components onto the screen
-            canvas.drawPaint(background);
+           // canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 // TODO Put more conditionals for double/triple bonds
 
