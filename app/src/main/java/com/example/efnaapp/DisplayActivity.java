@@ -12,7 +12,7 @@ public class DisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
     }
-/*
+
     public void goToMenu (View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -41,5 +41,5 @@ public class DisplayActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TODO.class);
         // TODO restart the exercise
         //startActivity(intent);
-    }*/
+    }
 }

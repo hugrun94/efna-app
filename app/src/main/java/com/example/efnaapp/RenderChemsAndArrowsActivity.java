@@ -93,7 +93,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         addContentView(myCanvas, layoutParams);
@@ -145,11 +145,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         @Override
         public void draw(Canvas canvas){
             super.draw(canvas);
-/*
+
             Paint background = new Paint();
             background.setColor(Color.parseColor("#335599"));
             background.setStyle(Paint.Style.FILL);
-*/
+
             Paint symbol = new Paint();
             symbol.setColor(Color.parseColor("#EEEE66")); // Colour of chemical compounds.
             symbol.setTextSize((int)(maxX*(100.0/1920.0)));         // Text size is in proportion with
@@ -157,7 +157,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             symbol.setStrokeWidth(1);
 
             // Drawing atoms, bonds and all other components onto the screen
-            //canvas.drawPaint(background);
+            canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 // TODO Put more conditionals for double/triple bonds
 
@@ -274,10 +274,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
                         arrowHeads.add(arrowhead);
                     }
-
-
                     break;
-
                 default:
                     break;
             }
@@ -296,13 +293,12 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_render_chems_and_arrows);
+        setContentView(R.layout.activity_display);
 
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();
         Point mdispSize = new Point();
         display.getSize(mdispSize);
-
 
         /**
          * TEST CODE HERE
