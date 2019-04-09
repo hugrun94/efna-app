@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -131,17 +132,24 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
+    // ASDF breyta return í VOID!
     @SuppressLint("ClickableViewAccessibility")
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
 
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        //RelativeLayout layout = ?? ASDF
         addContentView(myCanvas, layoutParams);
+
 
         myCanvas.setOnTouchListener(myCanvas);
         myCanvas.setDrawingCacheEnabled(true);
         mChemBitmap = myCanvas.getDrawingCache();
+        //return myCanvas; ASDF stroka út!
     }
 
     /**
@@ -186,11 +194,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         @Override
         public void draw(Canvas canvas){
             super.draw(canvas);
-
+/*
             Paint background = new Paint();
             background.setColor(Color.parseColor("#335599"));
             background.setStyle(Paint.Style.FILL);
-
+*/
             Paint symbol = new Paint();
             symbol.setColor(Color.parseColor("#EEEE66")); // Colour of chemical compounds.
             symbol.setTextSize((int)(maxX*(100.0/1920.0)));         // Text size is in proportion with
@@ -198,7 +206,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             symbol.setStrokeWidth(1);
 
             // Drawing atoms, bonds and all other components onto the screen
-            canvas.drawPaint(background);
+            //canvas.drawPaint(background);
             for(String[] f : componentsToDraw){
                 // TODO Put more conditionals for double/triple bonds
 
@@ -337,12 +345,17 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("-------------------BYRJA APPIÐ --------------------------------------");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display);
+        setContentView(R.layout.activity_render_chems_and_arrows);
 
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();
         Point mdispSize = new Point();
         display.getSize(mdispSize);
+
+
+        /**
+         * TEST CODE HERE
+         */
 
         //ArrayList<View> allButtons; ASDF stroka út ef framelayout?
         //allButtons = ((LinearLayout) findViewById(R.id.button_container)).getTouchables();
@@ -354,7 +367,30 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             buttons[i] = findViewById(id);
         }
 
-        buttons[0].bringToFront();
+        int id = R.id.menuButton;
+
+        Button testButton = findViewById(id);
+
+        System.out.println("------------------------- ASDF TAKKI HALLÓ ---------------");
+        System.out.println("-------------------------" + testButton);
+        System.out.println("-------------------------" + testButton.getClass());
+
+        testButton.bringToFront();
+
+        //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)testButton.getLayoutParams();
+        //params.addRule(RelativeLayout.);
+        //params.addRule(RelativeLayout.LEFT_OF, R.id.id_to_be_left_of);
+
+        /*
+        View test = drawCompoundsFromCoordinates(componentsToDraw);
+
+        View view = test.bringChildToFront(testButton);*/
+
+        ((View)testButton.getParent()).requestLayout();
+
+        /**
+         * END TEST CODE
+         */
 
         maxX = mdispSize.x;
         maxY = mdispSize.y;
@@ -366,7 +402,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         componentsToDraw = exercise.getComponentsToDraw();
 
 
-        drawCompoundsFromCoordinates(componentsToDraw);
+       drawCompoundsFromCoordinates(componentsToDraw);
 
         // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
         //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
