@@ -54,51 +54,6 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
-
-    /** This method reads a file which contains symbols (atoms, bonds, lone electron pairs, ...)
-     *  along with their coordinates.
-     *  ASDF EYÐA ÞESSUM EF EKKI NOTAÐUR
-     *  @return an ArrayList of String arrays where each array contains an item to be drawn along
-     *  with its screen coordinates.
-     */
-
-    /*
-    private ArrayList<String[]> configFileToCoordinates(){
-
-        ArrayList<String> listOfLines = new ArrayList<>();
-        ArrayList<String[]> elementsToDraw = new ArrayList<>();
-
-        try{
-            InputStream fstream = this.getResources().openRawResource(R.raw.datafile);
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
-
-            String line = bufReader.readLine();
-            while (line != null) {
-                listOfLines.add(line);
-                line = bufReader.readLine();
-            }
-
-            bufReader.close();
-        }
-
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for(String s : listOfLines){
-            String[] strArray = s.split(" ");
-            elementsToDraw.add(strArray);
-        }
-
-        return elementsToDraw;
-    }*/
-
-
      public void goToMenu (View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -132,24 +87,20 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     /**
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
-    // ASDF breyta return í VOID!
     @SuppressLint("ClickableViewAccessibility")
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
         MyCanvas myCanvas = new MyCanvas(getApplicationContext());
 
-
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        //RelativeLayout layout = ?? ASDF
-        addContentView(myCanvas, layoutParams);
 
+        addContentView(myCanvas, layoutParams);
 
         myCanvas.setOnTouchListener(myCanvas);
         myCanvas.setDrawingCacheEnabled(true);
         mChemBitmap = myCanvas.getDrawingCache();
-        //return myCanvas; ASDF stroka út!
     }
 
     /**
@@ -371,11 +322,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
         Button testButton = findViewById(id);
 
-        System.out.println("------------------------- ASDF TAKKI HALLÓ ---------------");
-        System.out.println("-------------------------" + testButton);
-        System.out.println("-------------------------" + testButton.getClass());
+        //System.out.println("------------------------- ASDF TAKKI HALLÓ ---------------");
+        //System.out.println("-------------------------" + testButton);
+       // System.out.println("-------------------------" + testButton.getClass());
 
-        testButton.bringToFront();
+        //testButton.bringToFront();
 
         //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)testButton.getLayoutParams();
         //params.addRule(RelativeLayout.);
@@ -386,7 +337,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
         View view = test.bringChildToFront(testButton);*/
 
-        ((View)testButton.getParent()).requestLayout();
+//        ((View)testButton.getParent()).requestLayout();
 
         /**
          * END TEST CODE
