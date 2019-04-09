@@ -7,6 +7,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +33,9 @@ public class ProblemActivity extends AppCompatActivity {
         // Get all the exercises of the type that is being shown:
         // For all exercises of type <what is being asked for, what the user has clicked>
 
-        String exerciseType = "";
+
+
+
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items); // TODO Change items to exerciseList
@@ -38,5 +46,8 @@ public class ProblemActivity extends AppCompatActivity {
                 //TODO KALLA Á ÞAÐ SEM JOJO ER AÐ GERA
             }
         });
+
+
     }
+
 }
