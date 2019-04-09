@@ -5,11 +5,9 @@ import android.graphics.PointF;
 
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Reaction;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingSMILESReader;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -69,48 +67,27 @@ class ExerciseInfo {
         int index = 0;
         int reactNum = 0;
         int prodNum = 0;
-        try {
-            while (reader.hasNext()) {
-                if (reactNum < smilesReaderInfo[index][0]) {
-                    IAtomContainer mol = reader.next();
-                    AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
-                    AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
-                    reaction.addReactant(mol);
-                    reactNum++;
-                } else if (prodNum < smilesReaderInfo[index][1]) {
-                    IAtomContainer mol = reader.next();
-                    AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
-                    reaction.addProduct(mol);
-                    prodNum++;
-                } else {
-                    exerciseList.add(new Exercise(reaction));
-                    reaction = new Reaction();
-                    index++;
-                    reactNum = 0;
-                    prodNum = 0;
-                } if (!reader.hasNext()) {
-                    exerciseList.add(new Exercise(reaction));
-                }
+        int width = ctxt.getResources().getDisplayMetrics().widthPixels;
+        int height = ctxt.getResources().getDisplayMetrics().heightPixels;
+        while (reader.hasNext()) {
+            if (reactNum < smilesReaderInfo[index][0]) {
+                IAtomContainer mol = reader.next();
+                reaction.addReactant(mol);
+                reactNum++;
+            } else if (prodNum < smilesReaderInfo[index][1]) {
+                IAtomContainer mol = reader.next();
+                reaction.addProduct(mol);
+                prodNum++;
+            } else {
+                exerciseList.add(new Exercise(reaction, width, height));
+                reaction = new Reaction();
+                index++;
+                reactNum = 0;
+                prodNum = 0;
+            } if (!reader.hasNext()) {
+                exerciseList.add(new Exercise(reaction, width, height));
             }
         }
-        catch (CDKException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Returns the atom container that the user is pointing to by touching.
-     * @param point the coordinates where the user has touched down
-     * @return the atomContainer that resides on this point
-     */
-    public AtomContainer getAtomContainerFromCoordinates(PointF point){
-        AtomContainer atomContainer = new AtomContainer();
-
-        // Get all atom containers on screen
-
-        // Return the one that occupies the space where "point" lands
-
-        return atomContainer;
     }
 
     Exercise getExercise(int id) { return exerciseList.get(id); }
