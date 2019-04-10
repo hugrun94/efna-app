@@ -1,9 +1,7 @@
 package com.example.efnaapp;
 
 import android.content.Context;
-import android.graphics.PointF;
 
-import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingSMILESReader;
@@ -13,7 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
- * This class reads in all exercises and contains the necessary info regarding each exercise
+ * This class reads in and contains all exercises
  * @author Ragnar Pálsson
  */
 

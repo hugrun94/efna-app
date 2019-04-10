@@ -50,6 +50,9 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
+    // Holds the Exercise the user is working on
+    private Exercise exercise;
+
 
     /** This method reads a file which contains symbols (atoms, bonds, lone electron pairs, ...)
      *  along with their coordinates.
@@ -296,8 +299,19 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
     }
 
-    public ArrayList<PointF> getPathFirstsAndLasts() {
-        return firstLastInPaths;
+    public void resolveArrows() {
+        ArrayList<PointF> origins = new ArrayList<>();
+        ArrayList<PointF> destinations = new ArrayList<>();
+        for(int i = 0; i <= firstLastInPaths.size()-2; i += 2) {
+
+            origins.add(new PointF(firstLastInPaths.get(i).x, firstLastInPaths.get(i).y));
+            destinations.add(new PointF(firstLastInPaths.get(i+1).x, firstLastInPaths.get(i+1).y));
+
+        }
+        exercise.resolveSolutionStep(origins, destinations);
+        componentsToDraw = exercise.getComponentsToDraw();
+        firstLastInPaths.clear();
+        arrows.clear();
     }
 
     @Override
@@ -317,7 +331,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
         ExerciseInfo info = new ExerciseInfo(this);
-        Exercise exercise = info.getExercise(0);
+        exercise = info.getExercise(0);
         componentsToDraw = exercise.getComponentsToDraw();
 
 

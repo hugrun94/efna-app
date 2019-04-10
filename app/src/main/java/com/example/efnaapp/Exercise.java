@@ -40,10 +40,15 @@ class Exercise {
     private int maxX;
     private int maxY;
 
+    /*
+
+    private int currentSolution = -1;
+     */
+
     Exercise(Reaction reaction, int x, int y) {
         this.exercise = reaction;
         this.reaction = reaction;
-        maxX = x;
+        maxX = x-160;
         maxY = y;
         initialize();
         calcCoords();
@@ -384,6 +389,17 @@ class Exercise {
             // Add the solution step to the list of solution steps and set the working reaction
             userSolution.add(solutionStep);
             reaction = solutionStep;
+            /* Alternate version allowing for previous and next stepping between solutions, deletes
+                all "next steps" because of new solution
+            reaction = solutionStep;
+            if (currentSolution == userSolution.size()-1) {
+                userSolution.add(solutionStep);
+            } else {
+                userSolution.removeRange(currentSolution+1, userSolution.size());
+                userSolution.add(solutionStep);
+            }
+            currentSolution++;
+             */
 
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
@@ -392,4 +408,40 @@ class Exercise {
         initialize();
         calcCoords();
     }
+
+    void previousStep() {
+        // Goes back to the previous solution and erases the newest one
+        if (userSolution.size() == 0) {
+            return;
+        } else if (userSolution.size() == 1) {
+            reaction = exercise;
+            userSolution.clear();
+        } else {
+            reaction = userSolution.get(userSolution.size()-2);
+            userSolution.remove(userSolution.size()-1);
+        }
+        /* Alternate version that does not erase the newest solution when going back, users
+            currentSolution int
+        if (userSolution.size() == 0) {
+            return;
+        } else if (currentSolution == 0) {
+            reaction = exercise;
+            currentSolution--;
+        } else {
+            currentSolution--;
+            reaction = userSolution.get(currentSolution);
+        }
+        */
+    }
+
+    /* called if next button pushed while no arrows on screen
+    void nextStep() {
+        if (userSolution.size() > currentSolution) {
+            return;
+        } else {
+            currentSolution++;
+            reaction = userSolution.get(currentSolution);
+        }
+    }
+     */
 }
