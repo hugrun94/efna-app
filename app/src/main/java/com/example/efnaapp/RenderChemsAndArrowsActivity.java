@@ -317,7 +317,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
         ExerciseInfo info = new ExerciseInfo(this);
-        Exercise exercise = info.getExercise(0);
+        Exercise exercise = info.getExercise(1);
         componentsToDraw = exercise.getComponentsToDraw();
 
 
