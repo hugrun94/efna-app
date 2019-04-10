@@ -1,0 +1,219 @@
+{
+  "acid/base": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "1",
+        "finsished": false,
+        "reactants": [
+          "[RMgX]",
+          "O"
+        ],
+        "products": [
+          "R",
+          "[Mg+X]",
+          "[O-H]"
+        ]
+      },
+      {
+        "id": "2",
+        "finsished": false,
+        "reactants": [
+          "[Na+]",
+          "[O-H]",
+          "[HOC(C)=O]"
+        ],
+        "products": [
+          "[H-OH]",
+          "[Na+]",
+          "[O-C(C)=O]"
+        ]
+      }
+    ]
+  },
+  "addition": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "CC=C",
+          "Cl"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "1",
+        "finsished": false,
+        "reactants": [
+          "CC=C",
+          "[O+]"
+        ],
+        "products": [
+          "CC(C)[O]"
+        ]
+      },
+      {
+        "id": "2",
+        "finsished": false,
+        "reactants": [
+          "CC(C=C)C",
+          "[NH2-]"
+        ],
+        "products": [
+          "C[CHC(C)(O+)C]"
+        ]
+      }
+    ]
+  },
+  "elimination": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "[B-]",
+          "CC(O)C(=O)CC"
+        ],
+        "products": [
+          "CC=CC=(O)C",
+          "[HO-]"
+        ]
+      }
+    ]
+  },
+  "substitution": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "1",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "2",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      }
+    ]
+  },
+  "radical": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "1",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "2",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      }
+    ]
+  },
+  "oxidation/reduction": {
+    "exercises": [
+      {
+        "id": "0",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "1",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      },
+      {
+        "id": "2",
+        "finsished": false,
+        "reactants": [
+          "CC#C",
+          "[NH2-]"
+        ],
+        "products": [
+          "[C-]",
+          "N"
+        ]
+      }
+    ]
+  }
+}

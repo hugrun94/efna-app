@@ -1,92 +1,127 @@
 package com.example.efnaapp;
 
-import android.content.Context;
-
-import org.openscience.cdk.Reaction;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.io.iterator.IteratingSMILESReader;
-import org.openscience.cdk.DefaultChemObjectBuilder;
-
-import java.io.*;
-import java.util.ArrayList;
-
 /**
  * This class reads in and contains all exercises
  * @author Ragnar Pálsson
  */
-
-class ExerciseInfo {
+public class ExerciseInfo {
+    private static Exercise exercise;
+    public static void setExercise(Exercise e) {
+        exercise = e;
+    }
+    public static Exercise getExercise() {
+        return exercise;
+    }
+}
+/*class ExerciseInfo {
 
     // List of exercises, stored as CDK Reactions which can store molecules as reactants (left side of a reaction)
     // and products (right side of a reaction)
     // TODO: List for each exercise type
-    private ArrayList<Exercise> exerciseList = new ArrayList<>();
+    private Exercise exercise;
+    ArrayList<String> productsArray;
+    ArrayList<String> reactantsArray;
+    int[] reactantsLength;
+    int[] productsLength;
 
     // Constructor which reads in all molecules from the exercises.smiles resource file and stores them according to
     // the format given in exercise_format.
-    ExerciseInfo(Context ctxt) {
+    ExerciseInfo(Context ctxt, String dude) {
         // TODO: Change to reading from smiles and format txt files to JSON parsing
-        ArrayList<String> listOfLines = new ArrayList<>();
-        try{
-            InputStream fstream = ctxt.getResources().openRawResource(R.raw.exercise_format);
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
-            String line = bufReader.readLine();
-            while (line != null) {
-                listOfLines.add(line);
-                line = bufReader.readLine();
-            }
-        }
+        ProblemActivity ha = new ProblemActivity();
+        ha.createJSON();
+        productsArray = ha.getProductsArray();
+        reactantsArray = ha.getReactantsArray();
+        reactantsLength = ha.getReactantslengtharray();
+        productsLength = ha.getProductslengtharray();
+        int id = Integer.parseInt(dude);
 
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Change formatting info to int array for easier use
-        // The formatting info is one line per exercise, with two integers separated by a whitespace,
-        // the first representing the number of reactants, and the second the number of products
-        int[][] smilesReaderInfo = new int[listOfLines.size()][2];
-        for (int i = 0; i < listOfLines.size(); i++){
-            String s = listOfLines.get(i);
-            smilesReaderInfo[i][0] = Integer.parseInt(s.split(" ")[0]);
-            smilesReaderInfo[i][1] = Integer.parseInt(s.split(" ")[1]);
-        }
-
-        // Read in and store the exercises according the the formatting info
-        // Also manipulate all molecules to contain the necessary information (valency, etc.)
-        InputStream fstream = ctxt.getResources().openRawResource(R.raw.exercises);
-        IteratingSMILESReader reader = new IteratingSMILESReader(fstream, DefaultChemObjectBuilder.getInstance());
-
+        SmilesParser parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         Reaction reaction = new Reaction();
-        int index = 0;
-        int reactNum = 0;
-        int prodNum = 0;
         int width = ctxt.getResources().getDisplayMetrics().widthPixels;
         int height = ctxt.getResources().getDisplayMetrics().heightPixels;
-        while (reader.hasNext()) {
-            if (reactNum < smilesReaderInfo[index][0]) {
-                IAtomContainer mol = reader.next();
+        int reactantNum = 0;
+        int productNum = 0;
+        for (int i = 0; i < id; i++) {
+            reactantNum += reactantsLength[i];
+            productNum += productsLength[i];
+        }
+        for (int j = 0; j < reactantsLength[id]; j++) {
+            try {
+                IAtomContainer mol = parser.parseSmiles(reactantsArray.get(j + reactantNum));
                 reaction.addReactant(mol);
-                reactNum++;
-            } else if (prodNum < smilesReaderInfo[index][1]) {
-                IAtomContainer mol = reader.next();
-                reaction.addProduct(mol);
-                prodNum++;
-            } else {
-                exerciseList.add(new Exercise(reaction, width, height));
-                reaction = new Reaction();
-                index++;
-                reactNum = 0;
-                prodNum = 0;
-            } if (!reader.hasNext()) {
-                exerciseList.add(new Exercise(reaction, width, height));
+            } catch (InvalidSmilesException e) {
+                e.printStackTrace();
             }
         }
+        for (int j = 0; j < productsLength[id]; j++) {
+            try {
+                IAtomContainer mol = parser.parseSmiles(productsArray.get(j + productNum));
+                reaction.addProduct(mol);
+            } catch (InvalidSmilesException e) {
+                e.printStackTrace();
+            }
+        }
+        exercise = new Exercise(reaction, width, height);
+    }
+    public void createJSON() {
+
+        try {
+            JSONObject obj = new JSONObject(loadJSONFromAsset());
+
+            JSONObject typeOfProblem = obj.getJSONObject("acid/base");
+            JSONArray allProblemsOfType = typeOfProblem.getJSONArray("exercises");
+            productslengtharray = new int[allProblemsOfType.length()];
+            reactantslengtharray = new int[allProblemsOfType.length()];
+
+            for (int i = 0; i < allProblemsOfType.length(); i++) {
+                JSONObject exerciseDetail = allProblemsOfType.getJSONObject(i);
+                exerciseId.add(exerciseDetail.getString("id"));
+                finished.add(exerciseDetail.getBoolean("finsished"));
+                JSONArray reactants = exerciseDetail.getJSONArray("reactants");
+                for (int j = 0; j < reactants.length(); j++) {
+                    String dudes = reactants.getString(j);
+                    reactantsArray.add(dudes);
+                }
+                reactantslengtharray[i] = reactants.length();
+
+                JSONArray products = exerciseDetail.getJSONArray("products");
+
+                for (int j = 0; j < products.length(); j++) {
+                    String dudes2 = products.getString(j);
+                    productsArray.add(dudes2);
+                    System.out.println(products.getString(j));
+                }
+                productslengtharray[i] = products.length();
+
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //  call the constructor of CustomAdapter to send the reference and data to Adapter
+        recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
     }
 
-    Exercise getExercise(int id) { return exerciseList.get(id); }
-}
+    public String loadJSONFromAsset() {
+        String json=null;
+        try {
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            System.out.print("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+
+
+    Exercise getExercise() { return exercise; }
+}*/
