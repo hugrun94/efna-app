@@ -1,6 +1,7 @@
 package com.example.efnaapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         return vh;
     }
 
+    public String getDude() {
+        return dude;
+    }
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         // set the data in items
@@ -52,16 +57,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                // Toast.makeText(context, exerciseId.get(position), Toast.LENGTH_SHORT).show();
                 dude = exerciseId.get(position);
 
-                ExerciseInfo info = new ExerciseInfo(context);
-
-
-
+                Intent startChemTestActivity = new Intent(context, RenderChemsAndArrowsActivity.class);
+                startChemTestActivity.putExtra("dude", dude);
+                ProblemActivity pa = (ProblemActivity)context;
+                pa.initExercise(dude);
+                context.startActivity(startChemTestActivity);
             }
         });
 
-    }
-    public String getClickeExercise(){
-        return dude;
     }
 
 

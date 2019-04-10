@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void startButtonActivity(View view){
         Intent intent = new Intent(this,ProblemActivity.class);
+        intent.putExtra("type",view.getId());
         startActivity(intent);
     }
 
