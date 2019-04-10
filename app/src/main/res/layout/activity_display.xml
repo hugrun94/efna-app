@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="true"
     tools:context="com.example.efnaapp.DisplayActivity"
     android:screenOrientation="landscape"
     tools:layout_editor_absoluteY="73dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/buttonArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
     <Button
         android:id="@+id/menuButton"
@@ -17,6 +27,8 @@
         android:layout_marginTop="8dp"
         android:onClick="goToMenu"
         android:text="@string/menu"
+        android:focusable="true"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/start_again"
+        android:onClick="startAgain"
         app:layout_constraintStart_toEndOf="@+id/menuButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,6 +50,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/finish"
+        android:onClick="finish"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +62,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/next"
+        android:onClick="nextStep"
         app:layout_constraintEnd_toStartOf="@+id/finishButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,20 +74,28 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/previous"
+        android:onClick="prevStep"
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!--android:layout_marginTop="60dp"-->
+    <!--view: only left/right constraints - vertical ones shouldn't be necessary-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/menuButton"
+        app:layout_constraintTop="@+id/buttonArea"-->
 
     <view
         android:id="@+id/chemicalsView"
         class="android.support.design.bottomappbar.BottomAppBar"
+        app:layout_constrainedHeight="true"
+        android:layout_height="330dp"
+        android:maxHeight="330dp"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menuButton"
         tools:context=".RenderChemsAndArrowsActivity" />
 
-</android.support.constraint.ConstraintLayout>
+</android.widget.LinearLayout>
