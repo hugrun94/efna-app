@@ -35,6 +35,9 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     // The bitmap used for everything to be rendered
     private Bitmap mChemBitmap;
 
+    // The canvas used for drawing everything onto
+    private MyCanvas myCanvas;
+
     // Holds all individual paths that the user draws on the screen
     private ArrayList<Path> arrows = new ArrayList<>();
 
@@ -46,6 +49,8 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     // ArrayList that holds string values for components to be drawn along with their coordinates.
     ArrayList<String[]> componentsToDraw;
 
+    // The exercise which the activity will be drawing, initialized in onCreate
+    private Exercise exercise;
 
      public void goToMenu (View view) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -53,15 +58,23 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void nextStep(View view){
-        //Intent intent = new Intent(this, TODO.class);
-        // TODO make the next step in the reaction appear
-        //startActivity(intent);
+        if (firstLastInPaths.isEmpty()) {
+            return;
+        }
+        resolveArrows();
+        getWindow().getDecorView().invalidate();
+        firstLastInPaths.clear();
+        arrows.clear();
+        myCanvas.clearArrowheads();
     }
 
-    public void prevStep(View view){
-        //Intent intent = new Intent(this, TODO.class);
-        // TODO make the next step in the reaction appear
-        //startActivity(intent);
+    public void prevStep(View view) {
+         exercise.previousStep();
+         componentsToDraw = exercise.getComponentsToDraw();
+         getWindow().getDecorView().invalidate();
+        firstLastInPaths.clear();
+        arrows.clear();
+        myCanvas.clearArrowheads();
     }
 
     public void finish(View view){
@@ -82,7 +95,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
 
-        MyCanvas myCanvas = new MyCanvas(this.getBaseContext());
+        myCanvas = new MyCanvas(this.getBaseContext());
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -116,6 +129,10 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             double dy = point2.y - point1.y;  // Putting "negative" value on the y to account for
                                               // Android's coordinate system vs Cartesian coordinates
             return Math.atan2(dy, dx);
+        }
+
+        public void clearArrowheads() {
+            arrowHeads.clear();
         }
 
         @Override
@@ -283,8 +300,6 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
         exercise.resolveSolutionStep(origins, destinations);
         componentsToDraw = exercise.getComponentsToDraw();
-        firstLastInPaths.clear();
-        arrows.clear();
     }
 
     @Override
@@ -309,7 +324,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
-        Exercise exercise = ExerciseInfo.getExercise();
+        exercise = ExerciseInfo.getExercise();
 
         componentsToDraw = exercise.getComponentsToDraw();
 
