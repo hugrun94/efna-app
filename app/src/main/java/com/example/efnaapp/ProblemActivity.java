@@ -51,6 +51,7 @@ public class ProblemActivity extends AppCompatActivity {
         return reactantslengtharray;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
