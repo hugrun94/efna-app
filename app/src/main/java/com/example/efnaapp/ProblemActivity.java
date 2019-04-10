@@ -101,6 +101,7 @@ public class ProblemActivity extends AppCompatActivity {
         ExerciseInfo.setExercise(new Exercise(reaction, width, height));
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
