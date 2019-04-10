@@ -295,9 +295,10 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         maxX = mdispSize.x;
         maxY = mdispSize.y;
 
-        // Stores items and their coordinates to be able to draw them in the right place
-        ExerciseInfo info = new ExerciseInfo(this);
-        Exercise exercise = info.getExercise(0);
+        // Stores items and their coordinates from config file to be able to draw them in the
+        // right place
+        Exercise exercise = ExerciseInfo.getExercise();
+
         componentsToDraw = exercise.getComponentsToDraw();
 
        drawCompoundsFromCoordinates(componentsToDraw);

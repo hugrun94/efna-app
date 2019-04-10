@@ -33,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
     public void pickReactionTypeBtn(View view){
+
         Intent intent = new Intent(this, ProblemActivity.class);
 
         Button pressed = findViewById(view.getId());
         String reactionType = pressed.getText().toString();
-        intent.putExtra("Reaction type", reactionType);
+        intent.putExtra("type", reactionType);
         startActivity(intent);
     }
 

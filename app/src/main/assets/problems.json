@@ -2,7 +2,7 @@
   "acid/base": {
     "exercises": [
       {
-        "id": "1",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -14,7 +14,7 @@
         ]
       },
       {
-        "id": "2",
+        "id": "1",
         "finsished": false,
         "reactants": [
           "[RMgX]",
@@ -27,7 +27,7 @@
         ]
       },
       {
-        "id": "3",
+        "id": "2",
         "finsished": false,
         "reactants": [
           "[Na+]",
@@ -45,7 +45,7 @@
   "addition": {
     "exercises": [
       {
-        "id": "4",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "CC=C",
@@ -57,7 +57,7 @@
         ]
       },
       {
-        "id": "5",
+        "id": "1",
         "finsished": false,
         "reactants": [
           "CC=C",
@@ -68,7 +68,7 @@
         ]
       },
       {
-        "id": "6",
+        "id": "2",
         "finsished": false,
         "reactants": [
           "CC(C=C)C",
@@ -83,7 +83,7 @@
   "elimination": {
     "exercises": [
       {
-        "id": "7",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "[B-]",
@@ -99,7 +99,7 @@
   "substitution": {
     "exercises": [
       {
-        "id": "10",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -111,7 +111,7 @@
         ]
       },
       {
-        "id": "11",
+        "id": "1",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -123,7 +123,7 @@
         ]
       },
       {
-        "id": "12",
+        "id": "2",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -139,7 +139,7 @@
   "radical": {
     "exercises": [
       {
-        "id": "13",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -151,7 +151,7 @@
         ]
       },
       {
-        "id": "14",
+        "id": "1",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -163,7 +163,7 @@
         ]
       },
       {
-        "id": "15",
+        "id": "2",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -177,9 +177,9 @@
     ]
   },
   "oxidation/reduction": {
-    "": [
+    "exercises": [
       {
-        "id": "16",
+        "id": "0",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -191,7 +191,7 @@
         ]
       },
       {
-        "id": "17",
+        "id": "1",
         "finsished": false,
         "reactants": [
           "CC#C",
@@ -203,7 +203,7 @@
         ]
       },
       {
-        "id": "18",
+        "id": "2",
         "finsished": false,
         "reactants": [
           "CC#C",
