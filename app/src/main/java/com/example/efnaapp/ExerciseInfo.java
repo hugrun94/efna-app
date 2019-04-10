@@ -3,11 +3,15 @@ package com.example.efnaapp;
 import android.content.Context;
 import android.graphics.PointF;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingSMILESReader;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+
 
 import java.io.*;
 import java.util.ArrayList;
@@ -24,12 +28,17 @@ class ExerciseInfo {
     // TODO: List for each exercise type
     private ArrayList<Exercise> exerciseList = new ArrayList<>();
 
+
     // Constructor which reads in all molecules from the exercises.smiles resource file and stores them according to
     // the format given in exercise_format.
     ExerciseInfo(Context ctxt) {
         // TODO: Change to reading from smiles and format txt files to JSON parsing
         ArrayList<String> listOfLines = new ArrayList<>();
-        try{
+        ProblemActivity ha = new ProblemActivity();
+        listOfLines = ha.getProductsArray();
+
+
+        try {
             InputStream fstream = ctxt.getResources().openRawResource(R.raw.exercise_format);
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(in));
@@ -38,13 +47,9 @@ class ExerciseInfo {
                 listOfLines.add(line);
                 line = bufReader.readLine();
             }
-        }
-
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -52,7 +57,7 @@ class ExerciseInfo {
         // The formatting info is one line per exercise, with two integers separated by a whitespace,
         // the first representing the number of reactants, and the second the number of products
         int[][] smilesReaderInfo = new int[listOfLines.size()][2];
-        for (int i = 0; i < listOfLines.size(); i++){
+        for (int i = 0; i < listOfLines.size(); i++) {
             String s = listOfLines.get(i);
             smilesReaderInfo[i][0] = Integer.parseInt(s.split(" ")[0]);
             smilesReaderInfo[i][1] = Integer.parseInt(s.split(" ")[1]);
@@ -84,11 +89,15 @@ class ExerciseInfo {
                 index++;
                 reactNum = 0;
                 prodNum = 0;
-            } if (!reader.hasNext()) {
+            }
+            if (!reader.hasNext()) {
                 exerciseList.add(new Exercise(reaction, width, height));
             }
+
         }
     }
+
+
 
     Exercise getExercise(int id) { return exerciseList.get(id); }
 }

@@ -11,7 +11,12 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".ProblemActivity"
+<<<<<<< HEAD
             android:screenOrientation="landscape"/>
+=======
+            android:screenOrientation="landscape">
+        </activity>
+>>>>>>> a4332313e1e2fddfe4a7787e51472e4d86d97c8c
 
         <activity
             android:name=".MainActivity"
@@ -19,9 +24,9 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
 
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
