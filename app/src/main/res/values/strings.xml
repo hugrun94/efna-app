@@ -14,6 +14,7 @@
     <string name="startAgainButton">Start Again</string>
     <string name="finishButton">Finish</string>
     <string name="nextButton">Next</string>
+    <string name="nextStepToast">You must draw some arrows to change something first!</string>
     <string name="previousButton">Previous</string>
 
 
