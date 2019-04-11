@@ -86,9 +86,9 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
          exercise.previousStep();
          componentsToDraw = exercise.getComponentsToDraw();
          getWindow().getDecorView().invalidate();
-        firstLastInPaths.clear();
-        arrows.clear();
-        myCanvas.clearArrowheads();
+         firstLastInPaths.clear();
+         arrows.clear();
+         myCanvas.clearArrowheads();
     }
 
     public void finish(View view){
