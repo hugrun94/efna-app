@@ -56,7 +56,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                 // display a toast with person name on item click
                // Toast.makeText(context, exerciseId.get(position), Toast.LENGTH_SHORT).show();
                 dude = exerciseId.get(position);
-                System.out.println(dude);
 
                 Intent startChemTestActivity = new Intent(context, RenderChemsAndArrowsActivity.class);
                 ProblemActivity pa = (ProblemActivity)context;

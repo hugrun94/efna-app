@@ -87,9 +87,6 @@ public class ProblemActivity extends AppCompatActivity {
             try {
                 IAtomContainer mol = parser.parseSmiles(reactantsArray.get(j + reactantNum));
                 reaction.addReactant(mol);
-                for (IAtom atom : mol.atoms()) {
-                    System.out.println(atom.getSymbol());
-                }
             } catch (InvalidSmilesException e) {
                 e.printStackTrace();
             }

@@ -14,14 +14,17 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.qsar.AtomValenceTool;
+import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 
 import javax.vecmath.Point2d;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the molecules for an exercise, coordinates and methods for manipulation.
@@ -108,18 +111,26 @@ class Exercise {
             Iterable<IAtomContainer> agents = Iterables.concat(reaction.getReactants().atomContainers(),
                     reaction.getProducts().atomContainers());
             for (IAtomContainer mol : agents) {
+                //AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
                 AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
+                LonePairElectronChecker lpec = new LonePairElectronChecker();
+                lpec.saturate(mol);
                 for (IAtom atom : mol.atoms()) {
                     atom.setValency(AtomValenceTool.getValence(atom));
-                    if (atom.getSymbol() == "N") {
+                    /*if (atom.getSymbol() == "N") {
                         atom.setValency(3);
-                    }
+                    }*/
                     int bondSum = 0;
                     for (IBond bond : atom.bonds()) {
                         bondSum += bond.getOrder().numeric();
                     }
-                    atom.setFormalCharge(- atom.getValency() + bondSum);
+                    int nonbonded = 0;
+                    List<ILonePair> pairs = mol.getConnectedLonePairsList(atom);
+                    for (int i = 0; i < pairs.size(); i++) {
+                        nonbonded += pairs.get(i).getElectronCount();
+                    }
+                    atom.setFormalCharge(atom.getValency() - (nonbonded + bondSum));
                 }
             }
         } catch (CDKException e) {

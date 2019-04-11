@@ -18,13 +18,13 @@
         "finsished": false,
         "reactants": [
           "[Na+]",
-          "[O-]",
-          "[HOC(C)=O]"
+          "[OH-]",
+          "OC(C)=O"
         ],
         "products": [
-          "[H-OH]",
+          "O",
           "[Na+]",
-          "[O-C(C)=O]"
+          "OC(C)=O"
         ]
       }
     ]
@@ -48,10 +48,10 @@
         "finsished": false,
         "reactants": [
           "CC=C",
-          "[O+]"
+          "[OH3+]"
         ],
         "products": [
-          "CC(C)[O]"
+          "CC(C)OH"
         ]
       },
       {
@@ -59,10 +59,10 @@
         "finsished": false,
         "reactants": [
           "CC(C=C)C",
-          "[NH2-]"
+          "[OH3+]"
         ],
         "products": [
-          "C[CHC(C)(O+)C]"
+          "CCC(O)(C)C"
         ]
       }
     ]
@@ -73,13 +73,13 @@
         "id": "0",
         "finsished": false,
         "reactants": [
-          "[B-]",
-          "CC(O)C(=O)CC"
+          "[OH-]",
+          "CCBr"
         ],
         "products": [
-          "CC=CC=(O)C",
-          "BH",
-          "[HO-]"
+          "O",
+          "C=C",
+          "[Br-]"
         ]
       }
     ]
