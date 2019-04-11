@@ -22,6 +22,7 @@ public class DisplayActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TODO.class);
         // TODO make the next step in the reaction appear
         //startActivity(intent);
+        System.out.println("***********************CALLING NEXT FROM DISPLAY************************");
     }
 
     public void prevStep(View view){
