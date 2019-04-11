@@ -58,6 +58,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void nextStep(View view){
+        Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
         //Intent intent = new Intent(this, TODO.class);
         // TODO make the next step in the reaction appear
         //startActivity(intent);
@@ -73,32 +74,37 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
 
         resolveArrows();
-        mFirstLastInPaths.clear();
-        mArrows.clear();
-        mMyCanvas.clearArrowheads();
+        //mFirstLastInPaths.clear();
+        //mArrows.clear();
+       // mMyCanvas.clearArrowheads();
+        startActivity(intent);
     }
 
     public void prevStep(View view) {
+        Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
          mExercise.previousStep();
          mComponentsToDraw = mExercise.getComponentsToDraw();
          mFirstLastInPaths.clear();
          mArrows.clear();
          mMyCanvas.clearArrowheads();
+        startActivity(intent);
     }
 
     public void finish(View view){
-        //Intent intent = new Intent(this, TODO.class);
+        Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
         // TODO finish mExercise and see feedback
         // Tag the mExercise as finished in this session
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     public void startAgain(View view){
+         Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
          mExercise.restart();
-         mComponentsToDraw = mExercise.getComponentsToDraw();
-         mFirstLastInPaths.clear();
-         mArrows.clear();
-         mMyCanvas.clearArrowheads();
+        // mComponentsToDraw = mExercise.getComponentsToDraw();
+         //mFirstLastInPaths.clear();
+         //mArrows.clear();
+         //mMyCanvas.clearArrowheads();
+         startActivity(intent);
     }
 
     /**
