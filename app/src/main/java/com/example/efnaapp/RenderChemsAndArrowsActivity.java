@@ -62,7 +62,6 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         // TODO make the next step in the reaction appear
         //startActivity(intent);
 
-
         // Use 1 for now (instead of 0), since every touch always draws something (even just button presses!)
         if(mArrows.size() == 1) {
             Context context = this.getBaseContext();
@@ -74,7 +73,6 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
 
         resolveArrows();
-        getWindow().getDecorView().invalidate();
         mFirstLastInPaths.clear();
         mArrows.clear();
         mMyCanvas.clearArrowheads();
@@ -83,7 +81,6 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     public void prevStep(View view) {
          mExercise.previousStep();
          mComponentsToDraw = mExercise.getComponentsToDraw();
-         getWindow().getDecorView().invalidate();
          mFirstLastInPaths.clear();
          mArrows.clear();
          mMyCanvas.clearArrowheads();
@@ -97,8 +94,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void startAgain(View view){
-        Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
-        startActivity(intent);
+         exercise.restart();
+         componentsToDraw = exercise.getComponentsToDraw();
+         firstLastInPaths.clear();
+         arrows.clear();
+         myCanvas.clearArrowheads();
     }
 
     /**
