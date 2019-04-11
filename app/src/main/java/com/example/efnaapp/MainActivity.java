@@ -41,11 +41,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void testChemDraw(View view) {
-        Intent startChemTestActivity = new Intent(this, RenderChemsAndArrowsActivity.class);
-        startActivity(startChemTestActivity);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
