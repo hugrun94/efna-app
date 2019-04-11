@@ -58,23 +58,21 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void nextStep(View view){
-        if (firstLastInPaths.isEmpty()) {
-            return;
-        }
-        resolveArrows();
-        getWindow().getDecorView().invalidate();
-        firstLastInPaths.clear();
-        arrows.clear();
-        myCanvas.clearArrowheads();
+         if (firstLastInPaths.isEmpty()) {
+             return;
+         }
+         resolveArrows();
+         firstLastInPaths.clear();
+         arrows.clear();
+         myCanvas.clearArrowheads();
     }
 
     public void prevStep(View view) {
          exercise.previousStep();
          componentsToDraw = exercise.getComponentsToDraw();
-         getWindow().getDecorView().invalidate();
-        firstLastInPaths.clear();
-        arrows.clear();
-        myCanvas.clearArrowheads();
+         firstLastInPaths.clear();
+         arrows.clear();
+         myCanvas.clearArrowheads();
     }
 
     public void finish(View view){
@@ -85,8 +83,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void startAgain(View view){
-        Intent intent = new Intent(this, RenderChemsAndArrowsActivity.class);
-        startActivity(intent);
+         exercise.restart();
+         componentsToDraw = exercise.getComponentsToDraw();
+         firstLastInPaths.clear();
+         arrows.clear();
+         myCanvas.clearArrowheads();
     }
 
     /**

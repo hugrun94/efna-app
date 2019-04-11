@@ -15,7 +15,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.tools.SaturationChecker;
+import org.openscience.cdk.qsar.AtomValenceTool;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 
@@ -110,31 +110,15 @@ class Exercise {
             for (IAtomContainer mol : agents) {
                 AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
                 AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(mol);
-                SaturationChecker sc = new SaturationChecker();
 
                 for (IAtom atom : mol.atoms()) {
-                    String type = atom.getAtomTypeName();
+                    int bondSum = (int) AtomContainerManipulator.getBondOrderSum(mol, atom);
+                    atom.setValency(AtomValenceTool.getValence(atom));
 
-                    if (sc.isOverSaturated(atom, mol)) {
-                        if (type.contains("minus")) {
-                            atom.setFormalCharge(0);
-                        } else {
-                            atom.setFormalCharge(1);
-                        }
-                    } else if (sc.isSaturated(atom, mol)) {
-                        if (type.contains("minus")) {
-                            atom.setFormalCharge(-1);
-                        } else if (type.contains("plus")) {
-                            atom.setFormalCharge(1);
-                        } else {
-                            atom.setFormalCharge(0);
-                        }
+                    if (atom.getValency() > 3) {
+                        atom.setFormalCharge((atom.getValency() + bondSum) - 8);
                     } else {
-                        if (type.contains("plus")) {
-                            atom.setFormalCharge(0);
-                        } else {
-                            atom.setFormalCharge(-1);
-                        }
+                        atom.setFormalCharge(atom.getValency() - bondSum);
                     }
                 }
             }
@@ -448,6 +432,13 @@ class Exercise {
             reaction = userSolution.get(currentSolution);
         }
         */
+    }
+
+    public void restart() {
+        reaction = exercise;
+        if (!userSolution.isEmpty()) {
+            userSolution.clear();
+        }
     }
 
     /* called if next button pushed while no arrows on screen
