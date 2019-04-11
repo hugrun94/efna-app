@@ -64,7 +64,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
 
         // Use 1 for now (instead of 0), since every touch always draws something (even just button presses!)
-        if(arrows.size() == 1) {
+        if(mArrows.size() == 1) {
             Context context = this.getBaseContext();
             String message = getString(R.string.nextStepToast);
 
