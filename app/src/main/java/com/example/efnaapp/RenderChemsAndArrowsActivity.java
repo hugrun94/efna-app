@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -23,34 +22,34 @@ import java.util.ArrayList;
 /**
  * This class reads a config file and uses its contents to draw chemical compounds onto the screen.
  * The class assumes that all components (i.e. atoms, bonds, electron pairs, hydrogen atoms, any plus-
- * signs between chemicals and arrows that point from reacting chemicals to product chemicals) have
+ * signs between chemicals and mArrows that point from reacting chemicals to product chemicals) have
  * been assigned correct coordinates.
  * @author Karen Ósk Pétursdóttir
  */
 public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
     // The width and height of the screen (assigned values in onCreate):
-    int maxX, maxY;
+    int mMaxX, mMaxY;
 
     // The bitmap used for everything to be rendered
     private Bitmap mChemBitmap;
 
     // The canvas used for drawing everything onto
-    private MyCanvas myCanvas;
+    private MyCanvas mMyCanvas;
 
     // Holds all individual paths that the user draws on the screen
-    private ArrayList<Path> arrows = new ArrayList<>();
+    private ArrayList<Path> mArrows = new ArrayList<>();
 
     // Stores the points of the path
-    private ArrayList<PointF> pointsInPath = new ArrayList<>();
+    private ArrayList<PointF> mPointsInPath = new ArrayList<>();
 
-    private ArrayList<PointF> firstLastInPaths = new ArrayList<>();
+    private ArrayList<PointF> mFirstLastInPaths = new ArrayList<>();
 
     // ArrayList that holds string values for components to be drawn along with their coordinates.
-    ArrayList<String[]> componentsToDraw;
+    ArrayList<String[]> mComponentsToDraw;
 
-    // The exercise which the activity will be drawing, initialized in onCreate
-    private Exercise exercise;
+    // The mExercise which the activity will be drawing, initialized in onCreate
+    private Exercise mExercise;
 
      public void goToMenu (View view) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -58,29 +57,29 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void nextStep(View view){
-        if (firstLastInPaths.isEmpty()) {
+        if (mFirstLastInPaths.isEmpty()) {
             return;
         }
         resolveArrows();
         getWindow().getDecorView().invalidate();
-        firstLastInPaths.clear();
-        arrows.clear();
-        myCanvas.clearArrowheads();
+        mFirstLastInPaths.clear();
+        mArrows.clear();
+        mMyCanvas.clearArrowheads();
     }
 
     public void prevStep(View view) {
-         exercise.previousStep();
-         componentsToDraw = exercise.getComponentsToDraw();
+         mExercise.previousStep();
+         mComponentsToDraw = mExercise.getComponentsToDraw();
          getWindow().getDecorView().invalidate();
-        firstLastInPaths.clear();
-        arrows.clear();
-        myCanvas.clearArrowheads();
+         mFirstLastInPaths.clear();
+         mArrows.clear();
+         mMyCanvas.clearArrowheads();
     }
 
     public void finish(View view){
         //Intent intent = new Intent(this, TODO.class);
-        // TODO finish exercise and see feedback
-        // Tag the exercise as finished in this session
+        // TODO finish mExercise and see feedback
+        // Tag the mExercise as finished in this session
         //startActivity(intent);
     }
 
@@ -93,29 +92,29 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
      * This method draws atoms, bonds e.t.c. onto the screen at their specified coordinates.
      */
     @SuppressLint("ClickableViewAccessibility")
-    private void drawCompoundsFromCoordinates(ArrayList<String[]> itemsToDraw) {
+    private void drawCompoundsFromCoordinates() {
 
-        myCanvas = new MyCanvas(this.getBaseContext());
+        mMyCanvas = new MyCanvas(this.getBaseContext());
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        addContentView(myCanvas, layoutParams);
+        addContentView(mMyCanvas, layoutParams);
 
-        myCanvas.setOnTouchListener(myCanvas);
-        myCanvas.setDrawingCacheEnabled(true);
-        mChemBitmap = myCanvas.getDrawingCache();
+        mMyCanvas.setOnTouchListener(mMyCanvas);
+        mMyCanvas.setDrawingCacheEnabled(true);
+        mChemBitmap = mMyCanvas.getDrawingCache();
     }
 
     /**
-     * This class has the drawing logic of all chemical compounds and user-drawn arrows(/paths).
+     * This class has the drawing logic of all chemical compounds and user-drawn mArrows(/paths).
      */
     private class MyCanvas extends View implements View.OnTouchListener {
 
         private float x, y;
         private Path arrow = new Path();
-        private ArrayList<Path> arrowHeads = new ArrayList<>();     // Holds the heads of all arrows (paths)
+        private ArrayList<Path> arrowHeads = new ArrayList<>();     // Holds the heads of all mArrows (paths)
 
         public MyCanvas(Context context){
             super(context);
@@ -145,14 +144,14 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
 
             Paint symbolPaint = new Paint();
             symbolPaint.setColor(Color.parseColor("#335599")); // Colour of chemical compounds.
-            symbolPaint.setTextSize((int)(maxX*(100.0/1920.0)));         // Text size is in proportion with
+            symbolPaint.setTextSize((int)(mMaxX *(100.0/1920.0)));         // Text size is in proportion with
             symbolPaint.setStyle(Paint.Style.FILL);                      // device window size.
             symbolPaint.setStrokeWidth(1);
 
             // Drawing atoms, bonds and all other components onto the screen
-            //Rect backgrRectangle = new Rect(0, 160, maxX, maxY);
+            //Rect backgrRectangle = new Rect(0, 160, mMaxX, mMaxY);
             //canvas.drawRect(backgrRectangle, backgroundPaint);
-            for(String[] f : componentsToDraw){
+            for(String[] f : mComponentsToDraw){
                 // TODO Put more conditionals for double/triple bonds
 
                 if(f.length == 5){
@@ -166,7 +165,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             // Drawing the path that the user gives via dragging a finger across the screen
             Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // This flag gives us smooth curves
             int arrowColor = Color.parseColor("#DD5599");
-            arrowPaint.setColor(arrowColor);  // Colour of user-drawn arrows(/lines)
+            arrowPaint.setColor(arrowColor);  // Colour of user-drawn mArrows(/lines)
             arrowPaint.setStrokeWidth(6);
             arrowPaint.setStyle(Paint.Style.STROKE);
 
@@ -175,11 +174,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
             arrowHeadPaint.setStrokeWidth(10);
             arrowHeadPaint.setStyle(Paint.Style.FILL);
 
-            // Draws the arrows if the bitmap is not null.
+            // Draws the mArrows if the bitmap is not null.
             // First the arrow shafts, then the heads.
             if(mChemBitmap != null) {
 
-                for (Path path : arrows) {
+                for (Path path : mArrows) {
                     canvas.drawPath(path, arrowPaint);
 
                 }
@@ -191,7 +190,7 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         }
 
         /*
-         * This method catches and stores the arrows that the user draws on the screen.
+         * This method catches and stores the mArrows that the user draws on the screen.
          */
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -211,10 +210,10 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
                     arrow = new Path();
                     endPoint.x = x;
                     endPoint.y = y;
-                    firstLastInPaths.add(new PointF(x, y));
+                    mFirstLastInPaths.add(new PointF(x, y));
 
                     arrow.moveTo(endPoint.x, endPoint.y);
-                    arrows.add(arrow);
+                    mArrows.add(arrow);
 
                     break;
 
@@ -223,30 +222,30 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
                     endPoint.x = x;
                     endPoint.y = y;
                     arrow.lineTo(x, y);
-                    pointsInPath.add(new PointF(x, y));
+                    mPointsInPath.add(new PointF(x, y));
 
                     invalidate();
 
                     break;
 
-                // When the user lifts their finger, the path ends and a triangle
-                // is constructed to make an arrowhead.
+                    // When the user lifts their finger, the path ends and a triangle
+                    // is constructed to make an arrowhead.
                     case MotionEvent.ACTION_UP:
 
                     endPoint.x = x;
                     endPoint.y = y;
-                    firstLastInPaths.add(new PointF(x, y));
+                    mFirstLastInPaths.add(new PointF(x, y));
 
-                    if (pointsInPath.size() > 3) {
+                    if (mPointsInPath.size() > 3) {
 
                         Path arrowhead = new Path();
 
                         // We use the last and 3rd last points in the path to find the correct angle
                         // for the arrow head.
 
-                        int last = pointsInPath.size() - 1;
-                        PointF lastPointInPath = new PointF(pointsInPath.get(last).x, pointsInPath.get(last).y);
-                        PointF somePreviousPoint = new PointF(pointsInPath.get(last - 2).x, pointsInPath.get(last - 2).y);
+                        int last = mPointsInPath.size() - 1;
+                        PointF lastPointInPath = new PointF(mPointsInPath.get(last).x, mPointsInPath.get(last).y);
+                        PointF somePreviousPoint = new PointF(mPointsInPath.get(last - 2).x, mPointsInPath.get(last - 2).y);
 
                         // The direction of the arrow head:
                         double angleLastSecondLast = getAngle(somePreviousPoint, lastPointInPath);
@@ -292,14 +291,14 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     public void resolveArrows() {
         ArrayList<PointF> origins = new ArrayList<>();
         ArrayList<PointF> destinations = new ArrayList<>();
-        for(int i = 0; i <= firstLastInPaths.size()-2; i += 2) {
+        for(int i = 0; i <= mFirstLastInPaths.size()-2; i += 2) {
 
-            origins.add(new PointF(firstLastInPaths.get(i).x, firstLastInPaths.get(i).y));
-            destinations.add(new PointF(firstLastInPaths.get(i+1).x, firstLastInPaths.get(i+1).y));
+            origins.add(new PointF(mFirstLastInPaths.get(i).x, mFirstLastInPaths.get(i).y));
+            destinations.add(new PointF(mFirstLastInPaths.get(i+1).x, mFirstLastInPaths.get(i+1).y));
 
         }
-        exercise.resolveSolutionStep(origins, destinations);
-        componentsToDraw = exercise.getComponentsToDraw();
+        mExercise.resolveSolutionStep(origins, destinations);
+        mComponentsToDraw = mExercise.getComponentsToDraw();
     }
 
     @Override
@@ -308,27 +307,32 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
+        /*
+         * Was trying to set top of view to 160dp but that doesn't seem to work in onCreate...
+
         int id = R.id.chemicalsView;
 
         View drawableArea = findViewById(id);
 
         //drawableArea.setTop(160); // Does not work here for some reason - done in onTouch instead
 
+        */
+
         // Gets the size of the screen and its max x and y values.
         Display display = getWindowManager().getDefaultDisplay();
         Point mdispSize = new Point();
         display.getSize(mdispSize);
 
-        maxX = mdispSize.x;
-        maxY = mdispSize.y;
+        mMaxX = mdispSize.x;
+        mMaxY = mdispSize.y;
 
         // Stores items and their coordinates from config file to be able to draw them in the
         // right place
-        exercise = ExerciseInfo.getExercise();
+        mExercise = ExerciseInfo.getExercise();
 
-        componentsToDraw = exercise.getComponentsToDraw();
+        mComponentsToDraw = mExercise.getComponentsToDraw();
 
-       drawCompoundsFromCoordinates(componentsToDraw);
+       drawCompoundsFromCoordinates();
 
         // gera readme eða einhverja skrá þar sem lýst er hvaða tákn eru notuð fyrir hvaða fyrirbæri?
         //      : eða .. fyrir rafeindapar, | eða -- fyrir efnatengi ef annað en hreinn texti.
