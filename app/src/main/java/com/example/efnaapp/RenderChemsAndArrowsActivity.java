@@ -17,6 +17,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,15 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TODO.class);
         // TODO make the next step in the reaction appear
         //startActivity(intent);
+
+
+        if(arrows.size() == 1) {
+            Context context = this.getBaseContext();
+            String message = getString(R.string.nextStepToast);
+
+            Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     public void prevStep(View view){
