@@ -94,11 +94,11 @@ public class RenderChemsAndArrowsActivity extends AppCompatActivity {
     }
 
     public void startAgain(View view){
-         exercise.restart();
-         componentsToDraw = exercise.getComponentsToDraw();
-         firstLastInPaths.clear();
-         arrows.clear();
-         myCanvas.clearArrowheads();
+         mExercise.restart();
+         mComponentsToDraw = mExercise.getComponentsToDraw();
+         mFirstLastInPaths.clear();
+         mArrows.clear();
+         mMyCanvas.clearArrowheads();
     }
 
     /**
