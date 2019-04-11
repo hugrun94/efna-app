@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class ReactionStep {
 
-    private RenderChemsAndArrowsActivity render = new RenderChemsAndArrowsActivity();
+    /*private RenderChemsAndArrowsActivity render = new RenderChemsAndArrowsActivity();
 
     //private ArrayList<Path> arrows =  render.getPaths();
 
@@ -46,4 +46,5 @@ public class ReactionStep {
     // atomcontainermanipulator getur farið yfir efni og breytt þeim rétt.
         // perceiveAtom....dót
     // geometryutil getclosestatom og bond
+    */
 }

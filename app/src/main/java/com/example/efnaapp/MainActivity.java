@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ProblemActivity.class);
 
-        Button pressed = findViewById(view.getId());
-        String reactionType = pressed.getText().toString();
-        intent.putExtra("type", reactionType);
+        intent.putExtra("type", view.getId());
         startActivity(intent);
     }
 
