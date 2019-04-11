@@ -11,8 +11,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,34 +18,14 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
     }
+
     public void pickReactionTypeBtn(View view){
 
         Intent intent = new Intent(this, ProblemActivity.class);
 
         intent.putExtra("type", view.getId());
         startActivity(intent);
-    }
-
-    public void pushcoll2(View view){
-        Intent intent = new Intent(this,DisplayActivity.class);
-        startActivity(intent);
-    }
-
-    public void testChemDraw(View view) {
-        Intent startChemTestActivity = new Intent(this, RenderChemsAndArrowsActivity.class);
-        startActivity(startChemTestActivity);
     }
 
     @Override
