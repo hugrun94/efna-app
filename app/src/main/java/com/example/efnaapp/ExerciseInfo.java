@@ -1,25 +1,7 @@
 package com.example.efnaapp;
 
-import android.content.Context;
-import android.graphics.PointF;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openscience.cdk.AtomContainer;
-import org.openscience.cdk.Reaction;
-import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.io.iterator.IteratingSMILESReader;
-import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.smiles.SmilesParser;
-
-
-import java.io.*;
-import java.util.ArrayList;
-
 /**
- * This class reads in all exercises and contains the necessary info regarding each exercise
+ * This class reads in and contains all exercises
  * @author Ragnar Pálsson
  */
 public class ExerciseInfo {

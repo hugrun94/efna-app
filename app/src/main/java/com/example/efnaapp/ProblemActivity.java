@@ -14,6 +14,7 @@ import org.json.JSONStringer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.smiles.SmilesParser;
 
@@ -74,7 +75,7 @@ public class ProblemActivity extends AppCompatActivity {
         int id = Integer.parseInt(dude);
 
         SmilesParser parser = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-        org.openscience.cdk.Reaction reaction = new Reaction();
+        Reaction reaction = new Reaction();
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
         int reactantNum = 0;
@@ -177,7 +178,6 @@ public class ProblemActivity extends AppCompatActivity {
                 for (int j = 0; j < products.length(); j++) {
                     String dudes2 = products.getString(j);
                     productsArray.add(dudes2);
-                    System.out.println(products.getString(j));
                 }
                 productslengtharray[i] = products.length();
 
@@ -203,7 +203,6 @@ public class ProblemActivity extends AppCompatActivity {
             is.read(buffer);
             is.close();
             json = new String(buffer, "UTF-8");
-            System.out.print("");
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

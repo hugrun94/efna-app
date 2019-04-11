@@ -58,7 +58,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                 dude = exerciseId.get(position);
 
                 Intent startChemTestActivity = new Intent(context, RenderChemsAndArrowsActivity.class);
-                startChemTestActivity.putExtra("dude", dude);
                 ProblemActivity pa = (ProblemActivity)context;
                 pa.initExercise(dude);
                 context.startActivity(startChemTestActivity);
