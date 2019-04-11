@@ -26,21 +26,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public CustomAdapter(Context context, ArrayList<String> exerciseId) {
         this.context = context;
         this.exerciseId = exerciseId;
-
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // infalte the item Layout
+        // inflate the item Layout
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.listi, parent, false);
         MyViewHolder vh = new MyViewHolder(v); // pass the view to View Holder
 
         return vh;
-    }
-
-    public String getDude() {
-        return dude;
     }
 
     @Override
@@ -54,7 +48,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             @Override
             public void onClick(View view) {
                 // display a toast with person name on item click
-               // Toast.makeText(context, exerciseId.get(position), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, exerciseId.get(position), Toast.LENGTH_SHORT).show();
                 dude = exerciseId.get(position);
 
                 Intent startChemTestActivity = new Intent(context, RenderChemsAndArrowsActivity.class);
@@ -63,10 +57,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                 context.startActivity(startChemTestActivity);
             }
         });
-
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -80,9 +71,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             super(itemView);
 
             // get the reference of item view's
-            exercise = (TextView) itemView.findViewById(R.id.exercise);
-
-
+            exercise = itemView.findViewById(R.id.exercise);
         }
     }
 }

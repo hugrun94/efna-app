@@ -80,15 +80,6 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <!--android:layout_marginTop="60dp"-->
-    <!--view: only left/right constraints - vertical ones shouldn't be necessary-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menuButton"
-        app:layout_constraintTop="@+id/buttonArea"-->
-
     <view
         android:id="@+id/chemicalsView"
         class="android.support.design.bottomappbar.BottomAppBar"

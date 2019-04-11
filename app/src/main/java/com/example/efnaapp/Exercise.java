@@ -67,7 +67,7 @@ class Exercise {
             double yOffset;
             double xStart = 0.5;
             int index = 0;
-            // Give reactants coordinates and add to componentsToDraw
+            // Give reactants coordinates and add to mComponentsToDraw
             for (IAtomContainer mol : agents) {
                 if (index > 0 && index != numReactants) {
                     // Add space between molecules for "+"

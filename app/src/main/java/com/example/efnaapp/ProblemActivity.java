@@ -28,6 +28,7 @@ import android.content.Context;
 public class ProblemActivity extends AppCompatActivity {
 
     // ArrayList for person names, email Id's and mobile numbers
+    // TODO what is this comment? ^
     ArrayList<String> exerciseId = new ArrayList<>();
     ArrayList<Boolean> finished = new ArrayList<>();
     ArrayList<String> reactantsArray = new ArrayList<>();
@@ -113,6 +114,7 @@ public class ProblemActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         exerciseType = getIntent().getExtras().getInt("type");
+
         createJSON();
 
     }
@@ -122,24 +124,36 @@ public class ProblemActivity extends AppCompatActivity {
         try {
             JSONObject obj = new JSONObject(loadJSONFromAsset());
             JSONObject typeOfProblem = obj.getJSONObject("acid/base");
+
             switch (exerciseType) {
                 case (R.id.button0):
                     typeOfProblem = obj.getJSONObject("acid/base");
+                    setTitle(R.string.Collection1);
                     break;
+
                 case (R.id.button1):
                     typeOfProblem = obj.getJSONObject("addition");
+                    setTitle(R.string.Collection2);
                     break;
+
                 case (R.id.button):
                     typeOfProblem = obj.getJSONObject("elimination");
+                    setTitle(R.string.Collection3);
                     break;
+
                 case (R.id.button3):
                     typeOfProblem = obj.getJSONObject("substitution");
+                    setTitle(R.string.Collection4);
                     break;
+
                 case (R.id.button4):
                     typeOfProblem = obj.getJSONObject("radical");
+                    setTitle(R.string.Collection5);
                     break;
+
                 case (R.id.button5):
                     typeOfProblem = obj.getJSONObject("oxidation/reduction");
+                    setTitle(R.string.Collection6);
                     break;
             }
 
