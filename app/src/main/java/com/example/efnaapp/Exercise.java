@@ -14,17 +14,14 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.qsar.AtomValenceTool;
-import org.openscience.cdk.tools.LonePairElectronChecker;
+import org.openscience.cdk.tools.SaturationChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 
 import javax.vecmath.Point2d;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class contains the molecules for an exercise, coordinates and methods for manipulation.
@@ -111,26 +108,34 @@ class Exercise {
             Iterable<IAtomContainer> agents = Iterables.concat(reaction.getReactants().atomContainers(),
                     reaction.getProducts().atomContainers());
             for (IAtomContainer mol : agents) {
-                //AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
                 AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
-                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
-                LonePairElectronChecker lpec = new LonePairElectronChecker();
-                lpec.saturate(mol);
+                AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(mol);
+                SaturationChecker sc = new SaturationChecker();
+
                 for (IAtom atom : mol.atoms()) {
-                    atom.setValency(AtomValenceTool.getValence(atom));
-                    /*if (atom.getSymbol() == "N") {
-                        atom.setValency(3);
-                    }*/
-                    int bondSum = 0;
-                    for (IBond bond : atom.bonds()) {
-                        bondSum += bond.getOrder().numeric();
+                    String type = atom.getAtomTypeName();
+
+                    if (sc.isOverSaturated(atom, mol)) {
+                        if (type.contains("minus")) {
+                            atom.setFormalCharge(0);
+                        } else {
+                            atom.setFormalCharge(1);
+                        }
+                    } else if (sc.isSaturated(atom, mol)) {
+                        if (type.contains("minus")) {
+                            atom.setFormalCharge(-1);
+                        } else if (type.contains("plus")) {
+                            atom.setFormalCharge(1);
+                        } else {
+                            atom.setFormalCharge(0);
+                        }
+                    } else {
+                        if (type.contains("plus")) {
+                            atom.setFormalCharge(0);
+                        } else {
+                            atom.setFormalCharge(-1);
+                        }
                     }
-                    int nonbonded = 0;
-                    List<ILonePair> pairs = mol.getConnectedLonePairsList(atom);
-                    for (int i = 0; i < pairs.size(); i++) {
-                        nonbonded += pairs.get(i).getElectronCount();
-                    }
-                    atom.setFormalCharge(atom.getValency() - (nonbonded + bondSum));
                 }
             }
         } catch (CDKException e) {
@@ -431,7 +436,7 @@ class Exercise {
             reaction = userSolution.get(userSolution.size()-2);
             userSolution.remove(userSolution.size()-1);
         }
-        /* Alternate version that does not erase the newest solution when going back, users
+        /* Alternate version that does not erase the newest solution when going back, uses
             currentSolution int
         if (userSolution.size() == 0) {
             return;
