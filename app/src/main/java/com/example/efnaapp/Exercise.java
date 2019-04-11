@@ -14,14 +14,17 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.qsar.AtomValenceTool;
+import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 
 import javax.vecmath.Point2d;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the molecules for an exercise, coordinates and methods for manipulation.
@@ -40,10 +43,15 @@ class Exercise {
     private int maxX;
     private int maxY;
 
+    /*
+
+    private int currentSolution = -1;
+     */
+
     Exercise(Reaction reaction, int x, int y) {
         this.exercise = reaction;
         this.reaction = reaction;
-        maxX = x;
+        maxX = x-160;
         maxY = y;
         initialize();
         calcCoords();
@@ -103,18 +111,26 @@ class Exercise {
             Iterable<IAtomContainer> agents = Iterables.concat(reaction.getReactants().atomContainers(),
                     reaction.getProducts().atomContainers());
             for (IAtomContainer mol : agents) {
+                //AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
                 AtomContainerManipulator.convertImplicitToExplicitHydrogens(mol);
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
+                LonePairElectronChecker lpec = new LonePairElectronChecker();
+                lpec.saturate(mol);
                 for (IAtom atom : mol.atoms()) {
                     atom.setValency(AtomValenceTool.getValence(atom));
-                    if (atom.getSymbol() == "N") {
+                    /*if (atom.getSymbol() == "N") {
                         atom.setValency(3);
-                    }
+                    }*/
                     int bondSum = 0;
                     for (IBond bond : atom.bonds()) {
                         bondSum += bond.getOrder().numeric();
                     }
-                    atom.setFormalCharge(- atom.getValency() + bondSum);
+                    int nonbonded = 0;
+                    List<ILonePair> pairs = mol.getConnectedLonePairsList(atom);
+                    for (int i = 0; i < pairs.size(); i++) {
+                        nonbonded += pairs.get(i).getElectronCount();
+                    }
+                    atom.setFormalCharge(atom.getValency() - (nonbonded + bondSum));
                 }
             }
         } catch (CDKException e) {
@@ -384,6 +400,17 @@ class Exercise {
             // Add the solution step to the list of solution steps and set the working reaction
             userSolution.add(solutionStep);
             reaction = solutionStep;
+            /* Alternate version allowing for previous and next stepping between solutions, deletes
+                all "next steps" because of new solution
+            reaction = solutionStep;
+            if (currentSolution == userSolution.size()-1) {
+                userSolution.add(solutionStep);
+            } else {
+                userSolution.removeRange(currentSolution+1, userSolution.size());
+                userSolution.add(solutionStep);
+            }
+            currentSolution++;
+             */
 
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
@@ -392,4 +419,40 @@ class Exercise {
         initialize();
         calcCoords();
     }
+
+    void previousStep() {
+        // Goes back to the previous solution and erases the newest one
+        if (userSolution.size() == 0) {
+            return;
+        } else if (userSolution.size() == 1) {
+            reaction = exercise;
+            userSolution.clear();
+        } else {
+            reaction = userSolution.get(userSolution.size()-2);
+            userSolution.remove(userSolution.size()-1);
+        }
+        /* Alternate version that does not erase the newest solution when going back, users
+            currentSolution int
+        if (userSolution.size() == 0) {
+            return;
+        } else if (currentSolution == 0) {
+            reaction = exercise;
+            currentSolution--;
+        } else {
+            currentSolution--;
+            reaction = userSolution.get(currentSolution);
+        }
+        */
+    }
+
+    /* called if next button pushed while no arrows on screen
+    void nextStep() {
+        if (userSolution.size() > currentSolution) {
+            return;
+        } else {
+            currentSolution++;
+            reaction = userSolution.get(currentSolution);
+        }
+    }
+     */
 }
